@@ -63,7 +63,7 @@ const Create: React.FC = () => {
         >
           <button
             type="button"
-            className="relative inline-flex items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:z-10"
+            className="relative inline-flex items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:z-10 ring-1 ring-inset ring-gray-300 "
           >
             <ArrowLeftIcon className="-ml-0.5 h-5 w-5 text-gray-400" aria-hidden="true" />
             View All Topics
@@ -130,7 +130,7 @@ const Create: React.FC = () => {
                     <div className="text-lg font-bold mb-4">Answers</div>
                     <div className="w-[350px]">
                       <div className="isolate -space-y-px rounded-md">
-                        <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 focus-within:z-10 focus-within:ring-2 focus-within:ring-indigo-600">
+                        <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ">
                           <label
                             htmlFor={'ans_label'}
                             className="block text-base  font-medium text-gray-900"
@@ -148,7 +148,7 @@ const Create: React.FC = () => {
                             onChange={(e) => setAnswer({ ...answer, label: e.target.value })}
                           />
                         </div>
-                        <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5  focus-within:z-10 focus-within:ring-2 focus-within:ring-indigo-600">
+                        <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5  ">
                           <label
                             htmlFor={'cta_label'}
                             className="block text-base  font-medium text-gray-900"
@@ -185,7 +185,7 @@ const Create: React.FC = () => {
                     <div className="text-lg font-bold">CTA</div>
                     <div className="w-[350px]">
                       <div className="isolate -space-y-px rounded-md">
-                        <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5  focus-within:z-10 focus-within:ring-2 focus-within:ring-indigo-600">
+                        <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5  ">
                           <label
                             htmlFor={'ans_label'}
                             className="block text-base  font-medium text-gray-900"
@@ -203,7 +203,7 @@ const Create: React.FC = () => {
                             onChange={(e) => setCTA({ ...cta, label: e.target.value })}
                           />
                         </div>
-                        <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 focus-within:z-10 focus-within:ring-2 focus-within:ring-indigo-600">
+                        <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ">
                           <label
                             htmlFor={'cta_label'}
                             className="block text-base  font-medium text-gray-900"
