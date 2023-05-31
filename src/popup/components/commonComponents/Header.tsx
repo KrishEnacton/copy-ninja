@@ -1,14 +1,18 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useLayoutEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import LogoutIcon from '@heroicons/react/24/outline/ArrowRightOnRectangleIcon'
 
-const Header = ({ className }: { className?: string }) => {
+const Header = ({ className, user }: { className?: string, user?: string }) => {
   const [isModal, setIsModal] = useState(false)
-
+  const [currentUser, setUser] = useState<any>(null)
   function logout() {
     localStorage.removeItem('user')
     setIsModal(false)
   }
+
+  useLayoutEffect(() => {
+     setUser(user)
+  },[])
 
 
   return (
@@ -25,7 +29,7 @@ const Header = ({ className }: { className?: string }) => {
             Copy Ninja
           </span>
         </a>
-        <div className="flex items-center md:order-2">
+        {user !== null &&<div className="flex items-center md:order-2">
           <a
             href="#"
             onClick={() => setIsModal(true)}
@@ -33,7 +37,7 @@ const Header = ({ className }: { className?: string }) => {
           >Logout
             <LogoutIcon className="h-5 w-5 ml-1" stroke="black" />
           </a>
-        </div>
+        </div>}
         <Transition.Root show={isModal} as={Fragment}>
           <Dialog as="div" className="relative z-10" onClose={() => setIsModal(false)}>
             <Transition.Child

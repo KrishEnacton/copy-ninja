@@ -26,12 +26,11 @@ const Dropdown = ({
   }
 
   useEffect(() => {
-    if (id === 'topicType') {
-      setSelected('random')
-    }
+    setSelected(selectOptions[0])
   }, [])
 
   useEffect(() => {
+    console.log({ selected, selectedOption })
   }, [selected, selectedOption])
 
   return (

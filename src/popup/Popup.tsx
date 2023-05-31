@@ -5,10 +5,11 @@ import MainLayout from './layouts/main'
 import SelectView from './pages/SelectView'
 import TopicView from './pages/TopicView'
 
-function App() {
+function App({user}: any) {
+  console.log({user})
 
   return (
-    <MainLayout>
+    <MainLayout user={user}>
       <MemoryRouter initialIndex={0} initialEntries={['/login', '/home', '/select', '/topic']}>
         <Routes>
           <Route path="/login" element={<Login />} />

@@ -6,6 +6,7 @@ import { PlusIcon } from '@heroicons/react/20/solid'
 import { getLocalStorage } from '../../../utils'
 import { useNavigate } from 'react-router-dom'
 import { Transition, Dialog } from '@headlessui/react'
+import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 
 const Search = ({ className, from }: { className?: string; from?: string }) => {
   const { getAllFolders, createFolder } = useSupabase()
@@ -15,7 +16,7 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
 
   const [allFolders, setAllFolders] = useState<string[]>([''])
   const navigate = useNavigate()
-  const createTopicURL = chrome.runtime.getURL('/options.html#/create')
+  const createTopicURL = chrome.runtime.getURL('/options.html#/home')
 
   function createFolderHandler() {
     setLoading(true)
@@ -30,8 +31,7 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
   }
 
   useEffect(() => {
-    getAllFolders().then((res) => {
-    })
+    getAllFolders().then((res) => {})
     setAllFolders(getLocalStorage('allFolders') ?? [''])
   }, [])
 
@@ -59,11 +59,7 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
     <div className={`flex justify-between  flex-col ${className}`}>
       <div className="px-4 md:px-0 py-1">
         <div className="mt-2 flex rounded-md items-end">
-          <Dropdown
-            className=''
-            id={'folder'}
-            selectOptions={allFolders.map((i: any) => i.name)}
-          />
+          <Dropdown className="" id={'folder'} selectOptions={allFolders.map((i: any) => i.name)} />
           <button
             type="button"
             onClick={() => setIsModal(true)}
@@ -82,19 +78,25 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
               type="text"
               name="topics"
               id="topics"
-              className={`block w-full ${from === 'popup' ? 'rounded-md' : 'rounded-md'
-                } border-0 py-1.5 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+              className={`block w-full ${
+                from === 'popup' ? 'rounded-md' : 'rounded-md'
+              } border-0 py-1.5 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
               placeholder="Search Topic"
             />
           </div>
           <button
             type="button"
-            onClick={() => navigate('/create')}
-            className="w-2/6 md:w-1/6 ml-4 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={() => redirect()}
+            className=" md:w-1/6 ml-4 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            New Topic
+            {from === 'popup' ? (
+              <Cog6ToothIcon className="w-5 h-5" />
+            ) : from === 'option' ? (
+              'New Topic'
+            ) : (
+              ''
+            )}
           </button>
-
         </div>
       </div>
       <Transition.Root show={isModal} as={Fragment}>
