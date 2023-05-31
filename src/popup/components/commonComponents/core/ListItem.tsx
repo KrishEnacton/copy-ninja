@@ -1,4 +1,9 @@
-import { ChevronRightIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
+import {
+  Cog6ToothIcon,
+  PencilSquareIcon,
+  TrashIcon,
+  CheckCircleIcon,
+} from '@heroicons/react/24/outline'
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { SpinnerLoader } from '../SpinnerLoader'
 import { useNavigate } from 'react-router-dom'
@@ -20,13 +25,13 @@ const ListItem = ({ className, from, item }: any) => {
 
   function editTopicHandler(body: TopicParams) {
     console.log({ ...body, topic: updatedInput })
+    setIsEdit(false)
     setLoading(true)
     if (updateTopic) {
       updateTopic({ ...body, topic: updatedInput }).then((res: any) => {
         console.log('res', res)
         if (res?.data?.length > 0) {
           setLoading(false)
-          setIsEdit(false)
           setIsEditTopic((prev) => !prev)
         }
       })
@@ -96,7 +101,9 @@ const ListItem = ({ className, from, item }: any) => {
               setIsEdit((prev) => !prev)
             }}
           >
-            {loading ? (
+            {isEdit ? (
+              <CheckCircleIcon className="w-6 h-6" />
+            ) : loading ? (
               <SpinnerLoader className="w-6 h-6" />
             ) : (
               <PencilSquareIcon className="w-6 h-6" />

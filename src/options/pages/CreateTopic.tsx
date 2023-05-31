@@ -9,6 +9,7 @@ import { getLocalStorage } from '../../utils'
 import { TopicParams } from '../../utils/global'
 import { SpinnerLoader } from '../../popup/components/commonComponents/SpinnerLoader'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
+import DisclosureComponent from '../components/Disclosure'
 
 const Create: React.FC = () => {
   const navigate = useNavigate()
@@ -44,6 +45,7 @@ const Create: React.FC = () => {
       })
     }
     if (result?.data?.[0]?.id) {
+      console.log({ result })
       setItem(result.data?.[0])
       setLoading(false)
     }
@@ -71,9 +73,9 @@ const Create: React.FC = () => {
         </span>
       </div>
       <div className="mt-4">
-        <div className="flex gap-x-3">
-          <div className='w-full'>
-            <form onSubmit={(e) => submitHandler(e)} className="flex rounded-md shadow-sm">
+        <div className="flex gap-x-3 justify-center items-center">
+          {item === null ? (
+            <form onSubmit={(e) => submitHandler(e)} className="mt-2 flex rounded-md shadow-sm">
               <div className="relative flex flex-grow items-stretch focus-within:z-10">
                 <input
                   type="text"
@@ -85,29 +87,27 @@ const Create: React.FC = () => {
                   onChange={(e) => setTopicName(e.target.value)}
                 />
               </div>
-              {item === null && (
-                <div className="outset-y-1 border-y border-gray-300 right-0 flex items-center">
-                  <label htmlFor="folders" className="sr-only">
-                    Folders
-                  </label>
-                  <select
-                    id="folders"
-                    name="folders"
-                    onChange={(e) => {
-                      console.log({ tar: e.target.value })
-                      setFolder(e.target.value)
-                    }}
-                    className="h-full border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm"
-                  >
-                    {[
-                      { name: 'Select Folder', value: 'Select Folder' },
-                      ...getLocalStorage('allFolders'),
-                    ].map((folder) => (
-                      <option value={folder?.id}>{folder?.name}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
+              <div className="outset-y-1 border-y border-gray-300 right-0 flex items-center">
+                <label htmlFor="folders" className="sr-only">
+                  Folders
+                </label>
+                <select
+                  id="folders"
+                  name="folders"
+                  onChange={(e) => {
+                    console.log({ tar: e.target.value })
+                    setFolder(e.target.value)
+                  }}
+                  className="h-full border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm"
+                >
+                  {[
+                    { name: 'Select Folder', value: 'Select Folder' },
+                    ...getLocalStorage('allFolders'),
+                  ].map((folder) => (
+                    <option value={folder?.id}>{folder?.name}</option>
+                  ))}
+                </select>
+              </div>
               <button
                 type="submit"
                 className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
@@ -115,7 +115,9 @@ const Create: React.FC = () => {
                 {item !== null ? 'Edit Topic' : 'Create Topic'}
               </button>
             </form>
-          </div>
+          ) : (
+            <div className="text-2xl font-bold">Topic: {item?.topic}</div>
+          )}
         </div>
       </div>
       {item !== null ? (
@@ -123,8 +125,6 @@ const Create: React.FC = () => {
           <div>
             <div className="flex gap-x-4 mt-6">
               <div className="flex flex-col justify-center items-center">
-                <div className="text-lg font-bold text-indigo-600">Answers</div>
-
                 <div className="flex gap-x-4">
                   <div className="flex flex-col justify-center items-center mt-4  border border-gray-300 p-4 rounded-xl bg-slate-100">
                     <div className="text-lg font-bold mb-4">Answers</div>
@@ -241,10 +241,9 @@ const Create: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-4 text-xl font-bold">{item?.topic}</div>
-          <div className="flex gap-x-16 w-full">
+          <div className="flex gap-x-8 w-full">
             <div className="w-full px-4 pt-16">
-              <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
+              <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2 overflow-y-scroll h-[16rem]">
                 {item?.answer?.filter((i) => {
                   if (i.label !== '' && i.value !== '') {
                     return true
@@ -258,36 +257,14 @@ const Create: React.FC = () => {
                       }
                       return false
                     })
-                    .map((ans, index: number) => (
-                      <Disclosure as="div" className="my-2" key={index}>
-                        {({ open }) => (
-                          <>
-                            <div className="flex">
-                              <Disclosure.Button className="flex w-full justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75">
-                                <span>{ans?.label ?? ''}</span>
-                                <ChevronUpIcon
-                                  className={`${open ? 'rotate-180 transform' : ''
-                                    } h-5 w-5 text-indigo-500`}
-                                />
-                              </Disclosure.Button>
-                              <button className="mt-1.5">
-                                <TrashIcon className="w-5 h-5" />
-                              </button>
-                            </div>
-                            <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
-                              {ans?.value ?? ''}
-                            </Disclosure.Panel>
-                          </>
-                        )}
-                      </Disclosure>
-                    ))
+                    .map((ans, index: number) => <DisclosureComponent ans={ans} index={index} />)
                 ) : (
                   <div className="text-lg font-semibold text-center">No answers yet</div>
                 )}
               </div>
             </div>
             <div className="w-full px-4 pt-16">
-              <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
+              <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2 overflow-y-scroll h-[16rem]">
                 {item?.cta?.filter((i) => {
                   if (i.label !== '' && i.value !== '') {
                     return true
@@ -301,34 +278,7 @@ const Create: React.FC = () => {
                       }
                       return false
                     })
-                    .map((ans, index: number) => (
-                      <Disclosure as="div" className="my-2" key={index}>
-                        {({ open }) => (
-                          <>
-                            <div className="flex">
-                              <Disclosure.Button className="flex w-full justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75">
-                                <span>{ans?.label ?? ''}</span>
-                                <ChevronUpIcon
-                                  className={`${open ? 'rotate-180 transform' : ''
-                                    } h-5 w-5 text-indigo-500`}
-                                />
-                              </Disclosure.Button>
-                              <div className='flex gap-x-2'>
-                                <button className="mt-1.5">
-                                  <PencilSquareIcon className="w-6 h-6" stroke='blue' />
-                                </button>
-                                <button className="mt-1.5">
-                                  <TrashIcon className="w-5 h-5" />
-                                </button>
-                              </div>
-                            </div>
-                            <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
-                              {ans?.value ?? ''}
-                            </Disclosure.Panel>
-                          </>
-                        )}
-                      </Disclosure>
-                    ))
+                    .map((ans, index: number) => <DisclosureComponent ans={ans} index={index} />)
                 ) : (
                   <div className="text-lg font-semibold text-center">No answers yet</div>
                 )}
