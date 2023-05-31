@@ -14,7 +14,7 @@ export interface QueryProps {
 }
 
 export interface TopicParams {
-    id: number
+    id?: number
     folderId?: number
     topic?: string
     answer?: string

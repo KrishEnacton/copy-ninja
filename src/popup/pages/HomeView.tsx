@@ -6,7 +6,7 @@ import { withAuth } from '../../options/components/HOC/withAuth'
 const Home: React.FC = () => {
   return (
     <Fragment>
-      <Search />
+      <Search from={"popup"} />
       <ListView className={'h-[10rem]'} from="popup"/>
     </Fragment>
   )
