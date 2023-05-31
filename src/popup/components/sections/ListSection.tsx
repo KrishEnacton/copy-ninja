@@ -15,6 +15,10 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
     })
   }, [isEditTopic])
 
+  useLayoutEffect(() => {
+    setAllTopics(getLocalStorage('allTopics'))
+  }, [])
+
   return (
     <div
       className={`mt-4 border border-gray-300 p-2 rounded-md divide-y-2 overflow-y-auto divide-gray-200 mx-4 ${className}`}
