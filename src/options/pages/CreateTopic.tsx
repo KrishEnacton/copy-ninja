@@ -123,12 +123,12 @@ const Create: React.FC = () => {
           <div>
             <div className="flex gap-x-4 mt-6">
               <div className="flex flex-col justify-center items-center">
-                <div className="text-lg font-bold text-indigo-600">Answers</div>
+                {/* <div className="text-lg font-bold text-indigo-600">Answers</div> */}
 
-                <div className="flex gap-x-4">
+                <div className="flex gap-x-4 h-full items-center w-[700px] mx-auto overflow-hidden justify-center">
                   <div className="flex flex-col justify-center items-center mt-4  border border-gray-300 p-4 rounded-xl bg-slate-100">
-                    <div className="text-lg font-bold mb-4">Answers</div>
-                    <div className="w-[350px]">
+                    <div className="text-lg font-bold">Answers</div>
+                    <div className="w-[306px]">
                       <div className="isolate -space-y-px rounded-md">
                         <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ">
                           <label
@@ -142,7 +142,7 @@ const Create: React.FC = () => {
                             name={'Answer with Regex'}
                             id={'ans_label'}
                             value={answer?.label}
-                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0  sm:leading-6 rounded-lg mt-2"
+                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500"
                             placeholder={'Answer with Regex'}
                             //@ts-ignore
                             onChange={(e) => setAnswer({ ...answer, label: e.target.value })}
@@ -160,14 +160,14 @@ const Create: React.FC = () => {
                             value={answer?.value}
                             name={'Label for CTA'}
                             id={'cta_label'}
-                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0  sm:leading-6 rounded-lg mt-2"
+                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500"
                             placeholder={'Link with Regex Context'}
                             //@ts-ignore
                             onChange={(e) => setAnswer({ ...answer, value: e.target.value })}
                           />
                         </div>
                       </div>
-                      <div className="flex justify-center items-center my-4">
+                      <div className="flex justify-center items-center mt-4">
                         <button
                           type="button"
                           onClick={() => {
@@ -183,7 +183,7 @@ const Create: React.FC = () => {
                   </div>
                   <div className="flex flex-col justify-center items-center mt-4  border border-gray-300 p-4 rounded-xl bg-slate-100">
                     <div className="text-lg font-bold">CTA</div>
-                    <div className="w-[350px]">
+                    <div className="w-[306px]">
                       <div className="isolate -space-y-px rounded-md">
                         <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5  ">
                           <label
@@ -197,7 +197,7 @@ const Create: React.FC = () => {
                             name={'Answer with Regex'}
                             value={cta?.label}
                             id={'ans_label'}
-                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0  sm:leading-6 rounded-lg mt-2"
+                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500 "
                             placeholder={'Answer with Regex'}
                             //@ts-ignore
                             onChange={(e) => setCTA({ ...cta, label: e.target.value })}
@@ -215,14 +215,14 @@ const Create: React.FC = () => {
                             name={'Label for CTA'}
                             value={cta?.value}
                             id={'cta_label'}
-                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0  sm:leading-6 rounded-lg mt-2"
-                            placeholder={'Link with Regex Context'}
+                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400  sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500 
+                            "placeholder={'Link with Regex Context'}
                             //@ts-ignore
                             onChange={(e) => setCTA({ ...cta, value: e.target.value })}
                           />
                         </div>
                       </div>
-                      <div className="flex justify-center items-center my-4">
+                      <div className="flex justify-center items-center mt-4">
                         <button
                           type="button"
                           onClick={() => {
@@ -241,10 +241,10 @@ const Create: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-4 text-xl font-bold">{item?.topic}</div>
-          <div className="flex gap-x-16 w-full">
-            <div className="w-full px-4 pt-16">
-              <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
+          <div className="mt-8    text-xl font-bold">{item?.topic}</div>
+          <div className="flex gap-x-4 w-full">
+            <div className="w-full">
+              <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
                 {item?.answer?.filter((i) => {
                   if (i.label !== '' && i.value !== '') {
                     return true
@@ -262,19 +262,19 @@ const Create: React.FC = () => {
                       <Disclosure as="div" className="my-2" key={index}>
                         {({ open }) => (
                           <>
-                            <div className="flex">
-                              <Disclosure.Button className="flex w-full justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75">
+                            <div className="flex border border-slate-300 bg-slate-50 rounded-md px-4 ">
+                              <Disclosure.Button className="flex w-full justify-between rounded-lg pr-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75 ">
                                 <span>{ans?.label ?? ''}</span>
                                 <ChevronUpIcon
                                   className={`${open ? 'rotate-180 transform' : ''
                                     } h-5 w-5 text-indigo-500`}
                                 />
                               </Disclosure.Button>
-                              <button className="mt-1.5">
+                              <button className="">
                                 <TrashIcon className="w-5 h-5" />
                               </button>
                             </div>
-                            <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
+                            <Disclosure.Panel className="px-4 pt-2 pb-2 text-sm text-gray-500 bg-slate-100 rounded-md">
                               {ans?.value ?? ''}
                             </Disclosure.Panel>
                           </>
@@ -286,8 +286,8 @@ const Create: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="w-full px-4 pt-16">
-              <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
+            <div className="w-full">
+              <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
                 {item?.cta?.filter((i) => {
                   if (i.label !== '' && i.value !== '') {
                     return true
@@ -305,8 +305,8 @@ const Create: React.FC = () => {
                       <Disclosure as="div" className="my-2" key={index}>
                         {({ open }) => (
                           <>
-                            <div className="flex">
-                              <Disclosure.Button className="flex w-full justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75">
+                            <div className="flex border border-slate-300 bg-slate-50 rounded-md px-4 ">
+                              <Disclosure.Button className="flex w-full justify-between rounded-lg pr-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75 ">
                                 <span>{ans?.label ?? ''}</span>
                                 <ChevronUpIcon
                                   className={`${open ? 'rotate-180 transform' : ''
@@ -314,15 +314,15 @@ const Create: React.FC = () => {
                                 />
                               </Disclosure.Button>
                               <div className='flex gap-x-2'>
-                                <button className="mt-1.5">
+                                <button className="">
                                   <PencilSquareIcon className="w-6 h-6" stroke='blue' />
                                 </button>
-                                <button className="mt-1.5">
+                                <button className="">
                                   <TrashIcon className="w-5 h-5" />
                                 </button>
                               </div>
                             </div>
-                            <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
+                            <Disclosure.Panel className="px-4 pt-2 pb-2 text-sm text-gray-500 bg-slate-100 rounded-md">
                               {ans?.value ?? ''}
                             </Disclosure.Panel>
                           </>
