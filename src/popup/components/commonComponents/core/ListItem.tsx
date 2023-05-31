@@ -48,7 +48,7 @@ const ListItem = ({ className, from, item }: any) => {
   }, [isEdit]);
   return (
     <div
-      className={`${className} group flex justify-between py-2`}
+      className={`${className} group flex justify-between py-2 text-indigo-500 font-medium`}
       onClick={() => {
         console.log({ from })
         if (from === 'popup') {
@@ -96,7 +96,7 @@ const ListItem = ({ className, from, item }: any) => {
           </div>
         )}
         <div className='group-hover:cursor-pointer'>
-          <TrashIcon className='w-6 h-6' onClick={() => deleteTopicHandler(item.id)} />
+          <TrashIcon className='w-6 h-6 text-black' onClick={() => deleteTopicHandler(item.id)} />
         </div>
       </div>
     </div>

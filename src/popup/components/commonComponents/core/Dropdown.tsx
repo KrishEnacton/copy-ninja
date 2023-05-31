@@ -32,16 +32,16 @@ const Dropdown = ({
   }, [])
 
   useEffect(() => {
-    console.log("check",{selected, selectedOption})
+    console.log("check", { selected, selectedOption })
   }, [selected, selectedOption])
 
   return (
-    <div className={`${className} flex justify-center relative w-full`}>
+    <div className={`${className} flex justify-center relative w-full self-center`}>
       <Menu id={id} as="div" className=" inline-block text-left w-full">
         <div className="w-full">
-          <Menu.Button className="inline-flex justify-between w-full gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+          <Menu.Button className="flex justify-between w-full rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
             <span className={`${selected === '' && 'text-gray-400'}`}>{selected}</span>
-            <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" />
+            <ChevronDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
           </Menu.Button>
         </div>
 
