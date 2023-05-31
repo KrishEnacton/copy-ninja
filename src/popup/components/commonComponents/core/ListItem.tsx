@@ -1,16 +1,18 @@
 import { ChevronRightIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { SpinnerLoader } from '../SpinnerLoader'
 import { useNavigate } from 'react-router-dom'
 import useSupabase from '../../../../supabase/use-supabase'
 import { TopicParams } from '../../../../utils/global'
 import { useRecoilState } from 'recoil'
 import { isEditState } from '../../../../options/recoil/atoms'
+import { Dialog, Transition } from '@headlessui/react'
 const ListItem = ({ className, from, item }: any) => {
   const navigate = useNavigate()
   const { updateTopic, deleteTopic, getAllTopics } = useSupabase()
 
   const [isEditTopic, setIsEditTopic] = useRecoilState(isEditState)
+  const [isModal, setIsModal] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const [updatedInput, setUpdatedInput] = useState<string>('')
@@ -19,22 +21,24 @@ const ListItem = ({ className, from, item }: any) => {
   function editTopicHandler(body: TopicParams) {
     console.log({ ...body, topic: updatedInput })
     setLoading(true)
-    if (updateTopic)
-      updateTopic({ ...body, topic: updatedInput })
-        .then((res: any) => {
-          console.log('res', res)
-          if (res?.data?.length > 0) {
-            setLoading(false)
-            setIsEdit(false)
-            setIsEditTopic(prev => !prev)
-          }
-        })
-        .finally(() => setLoading(false))
+    if (updateTopic) {
+      updateTopic({ ...body, topic: updatedInput }).then((res: any) => {
+        console.log('res', res)
+        if (res?.data?.length > 0) {
+          setLoading(false)
+          setIsEdit(false)
+          setIsEditTopic((prev) => !prev)
+        }
+      })
+    }
   }
 
   function deleteTopicHandler(id: number) {
-    deleteTopic(id).then(res => {
-      setIsEditTopic(prev => !prev)
+    setLoading(true)
+    deleteTopic(id).then((res) => {
+      setIsEditTopic((prev) => !prev)
+      setLoading(false)
+      setIsModal(false)
     })
   }
   useLayoutEffect(() => {
@@ -43,12 +47,13 @@ const ListItem = ({ className, from, item }: any) => {
 
   useEffect(() => {
     if (isEdit && inputRef.current) {
-      inputRef.current.focus();
+      inputRef.current.focus()
     }
-  }, [isEdit]);
+    console.log({isEdit})
+  }, [isEdit])
   return (
     <div
-      className={`${className} group flex justify-between py-2`}
+      className={`${className} group flex justify-between py-2 text-indigo-500 font-medium`}
       onClick={() => {
         console.log({ from })
         if (from === 'popup') {
@@ -62,42 +67,103 @@ const ListItem = ({ className, from, item }: any) => {
             e.preventDefault()
             editTopicHandler(item)
           }}
-          className='group-hover:cursor-pointer'
+          className="group-hover:cursor-pointer"
         >
           <input
             ref={inputRef}
-            type='text'
+            type="text"
             readOnly={!isEdit}
-            className='border-none focus:border-none focus:ring-none focus:outline-none'
+            className="border-transparent focus:border-transparent focus:ring-0"
             value={updatedInput}
             onBlur={() => setIsEdit(false)}
             onChange={(e) => setUpdatedInput(e.target.value)}
           />
-          <button type='submit' className='hidden'></button>
+          <button type="submit" className="hidden"></button>
         </form>
       ) : (
-        <div className='group-hover:cursor-pointer' onClick={() => navigate('/create', {state: item})}>
+        <div
+          className="group-hover:cursor-pointer"
+          onClick={() => navigate('/create', { state: item })}
+        >
           {item?.topic}
         </div>
       )}
-      <div className='flex gap-x-4'>
+      <div className="flex gap-x-4">
         {from === 'option' && (
           <div
-            className='group-hover:cursor-pointer'
+            className="group-hover:cursor-pointer"
             onClick={() => {
               setIsEdit((prev) => !prev)
             }}
           >
             {loading ? (
-              <SpinnerLoader className='w-6 h-6' />
+              <SpinnerLoader className="w-6 h-6" />
             ) : (
-              <PencilSquareIcon className='w-6 h-6' />
+              <PencilSquareIcon className="w-6 h-6" />
             )}
           </div>
         )}
-        <div className='group-hover:cursor-pointer'>
-          <TrashIcon className='w-6 h-6' onClick={() => deleteTopicHandler(item.id)} />
+        <div className="group-hover:cursor-pointer" onClick={() => setIsModal(true)}>
+          <TrashIcon className="w-6 h-6 text-black" />
         </div>
+        <Transition.Root show={isModal} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={() => setIsModal(false)}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 z-10 overflow-y-auto">
+              <div className="flex min-h-[63%] items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                  enterTo="opacity-100 translate-y-0 sm:scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                  leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                >
+                  <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                    <div>
+                      <div className="mt-3 text-center sm:mt-5">
+                        <Dialog.Title
+                          as="h3"
+                          className="text-base font-semibold leading-6 text-gray-900 mb-4"
+                        >
+                          Sure, you want to delete the Topic?
+                        </Dialog.Title>
+                      </div>
+                    </div>
+                    <div className="mt-5 sm:mt-6 flex gap-x-2">
+                      <button
+                        type="button"
+                        className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                        onClick={() => deleteTopicHandler(item.id)}
+                      >
+                        {loading ? <SpinnerLoader className="w-5 h-5" /> : 'Yes'}
+                      </button>
+                      <button
+                        type="button"
+                        className="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                        onClick={() => setIsModal(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition.Root>
       </div>
     </div>
   )

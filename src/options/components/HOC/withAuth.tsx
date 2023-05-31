@@ -7,7 +7,6 @@ export const withAuth = (Component: any) => {
 
     useEffect(() => {
       const user = JSON.parse(localStorage.getItem('user') || '{}')
-      console.log({user}, 'hoc')
       if (!user?.user?.id) {
         navigate('/')
       }
