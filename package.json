@@ -1,0 +1,51 @@
+{
+  "name": "team-comment-extension",
+  "version": "0.1.0",
+  "author": "no one",
+  "description": "",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "chrome-extension",
+    "react",
+    "vite",
+    "create-chrome-ext"
+  ],
+  "engines": {
+    "node": ">=14.18.0"
+  },
+  "scripts": {
+    "dev": "npm-run-all --parallel tailwind:watch _dev",
+    "build": "npm-run-all --parallel tailwind:build _build",
+    "_dev": "vite",
+    "_build": "tsc && vite build",
+    "preview": "vite preview",
+    "fmt": "prettier --write '**/*.{tsx,ts,json,css,scss,md}'",
+    "tailwind:watch": "npx tailwindcss -i ./src/tailwind/input.css -o ./src/tailwind/output.css --watch",
+    "tailwind:build": "npx tailwindcss -i ./src/tailwind/input.css -o ./src/tailwind/output.css"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.14",
+    "@heroicons/react": "^2.0.18",
+    "@supabase/supabase-js": "^2.22.0",
+    "@types/chrome": "^0.0.236",
+    "flowbite": "^1.6.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.11.2",
+    "recoil": "^0.7.7"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^1.0.12",
+    "@types/react": "^18.0.14",
+    "@types/react-dom": "^18.0.5",
+    "@vitejs/plugin-react": "^1.3.2",
+    "glob": "^9.2.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.7.1",
+    "tailwindcss": "^3.3.2",
+    "typescript": "^4.6.4",
+    "vite": "^2.9.13"
+  },
+  "postcss": "./postcss.config.js"
+}
