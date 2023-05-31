@@ -9,7 +9,7 @@ const SectionHeader: React.FC = () => {
       <div className="py-2 rounded-md cursor-pointer" onClick={() => navigate("/home")}>
         <ArrowLeftIcon className="h-7 w-7" stroke='' />
       </div>
-      <div className="flex gap-x-2 text-indigo-500 font-semibold">
+      <div className="flex gap-x-1 text-indigo-500 font-semibold">
         <span>Topic:</span>
         <span>Web Development</span>
       </div>

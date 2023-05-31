@@ -11,7 +11,7 @@ const CustomSection = () => {
   return (
     <div className="px-2 py-4 text-lg text-black">
       <div className="flex justify-between">
-        <div className='text-lg font-semibold'>CTA</div>
+        <div className='text-lg font-semibold text-indigo-500'>CTA</div>
         <div>
           <CustomInput
             className={'accent-indigo-500 cursor-pointer'}
@@ -23,15 +23,15 @@ const CustomSection = () => {
           />
         </div>
       </div>
-      <div className="flex flex-col my-2">
-        <div className='text-base font-medium mb-1'>Select Answer:</div>
+      <div className="flex flex-col my-4">
+        <div className='text-base font-medium'>Select Answer:</div>
         <Dropdown
           id={'select_ans'}
           selectOptions={['React Development', 'Backend Development']}
           setOptions={(value: string) => setQuery((prevState) => ({ ...prevState, answer: value }))}
         />
       </div>
-      <div className="flex flex-col my-4 mb-1">
+      <div className="flex flex-col">
         <div className='text-base font-medium '>Select CTA:</div>
         <Dropdown
           id={'select_cta'}

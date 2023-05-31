@@ -9,7 +9,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="">
-      <div className="pl-5">
+      <div className="pl-4">
         <button
           type="button"
           onClick={() => navigate('/create')}
