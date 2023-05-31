@@ -9,7 +9,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="">
-      <div className="">
+      {/* <div className="">
         <button
           type="button"
           onClick={() => navigate('/create')}
@@ -17,7 +17,7 @@ const Home: React.FC = () => {
         >
           New Topic
         </button>
-      </div>
+      </div> */}
       <Search className="w-full" from='option' />
       <ListView className="w-[700px] h-[600px]" from={'option'} />
     </div>
