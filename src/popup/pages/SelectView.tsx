@@ -11,9 +11,6 @@ import { withAuth } from '../../options/components/HOC/withAuth'
 const SelectView: React.FC = () => {
   const [selectedTopic, setSelectedTopic] = useRecoilState(selectedType)
 
-  useEffect(() => {
-    console.log({ selectedTopic })
-  }, [selectedTopic])
   return (
     <Fragment>
       <SectionLayout>

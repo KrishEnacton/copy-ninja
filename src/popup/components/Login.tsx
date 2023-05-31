@@ -38,7 +38,6 @@ const Login = () => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     if (user?.user?.id) {
-      // console.log(user, 'from popup')
       navigate('/')
     }
   }, [])

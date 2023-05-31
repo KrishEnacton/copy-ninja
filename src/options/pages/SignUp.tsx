@@ -19,7 +19,6 @@ const SignUp = () => {
       const formFields = form.elements
       const email = formFields.email.value
       const password = formFields.password.value
-      console.log({ email, password })
       const data: any = await signUp({
         email,
         password,

@@ -6,7 +6,6 @@ const Header = ({ className }: { className?: string }) => {
   const [isModal, setIsModal] = useState(false)
 
   function logout() {
-    console.log('check log')
     localStorage.removeItem('user')
     setIsModal(false)
   }

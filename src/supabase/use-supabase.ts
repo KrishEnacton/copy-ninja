@@ -25,7 +25,6 @@ const useSupabase = () => {
         email,
         password,
       })
-      console.log({ data })
       chrome.storage.local.set({ user: data })
       localStorage.setItem('user', JSON.stringify(data))
       return data.user
@@ -100,7 +99,6 @@ const useSupabase = () => {
   async function updateTopic(body: TopicParams) {
     try {
       const { topic, answer, cta, id } = body
-      console.log(body, 'id')
       const { data, error } = await supabase
         .from('tbl_topic')
         .update([{ topic: topic ?? '', answer: answer ?? [''], cta: cta ?? [''] },])

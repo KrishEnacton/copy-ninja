@@ -19,7 +19,6 @@ const OptionsLogin = () => {
       const formFields = form.elements
       const email = formFields.email.value
       const password = formFields.password.value
-      console.log({ email, password })
       const { data, error } = await login({
         email,
         password,

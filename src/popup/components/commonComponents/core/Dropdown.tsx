@@ -32,7 +32,6 @@ const Dropdown = ({
   }, [])
 
   useEffect(() => {
-    console.log("check", { selected, selectedOption })
   }, [selected, selectedOption])
 
   return (

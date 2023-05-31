@@ -31,7 +31,6 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
 
   useEffect(() => {
     getAllFolders().then((res) => {
-      console.log(res)
     })
     setAllFolders(getLocalStorage('allFolders') ?? [''])
   }, [])
@@ -39,7 +38,6 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
   function redirect() {
     chrome.tabs.query({}, (tabs) => {
       if (from === 'popup') {
-        console.log({ tabs })
         if (!tabs.find((tab) => tab.url === createTopicURL)) {
           chrome.tabs.create({
             url: createTopicURL,

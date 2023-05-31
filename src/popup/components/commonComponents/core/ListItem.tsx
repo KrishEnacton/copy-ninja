@@ -24,12 +24,10 @@ const ListItem = ({ className, from, item }: any) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   function editTopicHandler(body: TopicParams) {
-    console.log({ ...body, topic: updatedInput })
     setIsEdit(false)
     setLoading(true)
     if (updateTopic) {
       updateTopic({ ...body, topic: updatedInput }).then((res: any) => {
-        console.log('res', res)
         if (res?.data?.length > 0) {
           setLoading(false)
           setIsEditTopic((prev) => !prev)
@@ -54,13 +52,11 @@ const ListItem = ({ className, from, item }: any) => {
     if (isEdit && inputRef.current) {
       inputRef.current.focus()
     }
-    console.log({ isEdit })
   }, [isEdit])
   return (
     <div
       className={`${className} group flex justify-between py-2 text-indigo-500 font-medium`}
       onClick={() => {
-        console.log({ from })
         if (from === 'popup') {
           navigate('/select')
         }

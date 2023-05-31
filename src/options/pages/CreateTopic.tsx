@@ -29,7 +29,6 @@ const Create: React.FC = () => {
     let result: any
     let body: TopicParams
     if (item !== null) {
-      console.log({ cta, answer })
       if (cta) {
         body = { ...item, answer: [...item.answer], cta: [...item.cta, cta], topic: topicName }
         result = await updateTopic(body)
@@ -45,7 +44,6 @@ const Create: React.FC = () => {
       })
     }
     if (result?.data?.[0]?.id) {
-      console.log({ result })
       setItem(result.data?.[0])
       setLoading(false)
     }
@@ -95,7 +93,6 @@ const Create: React.FC = () => {
                   id="folders"
                   name="folders"
                   onChange={(e) => {
-                    console.log({ tar: e.target.value })
                     setFolder(e.target.value)
                   }}
                   className="h-full border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm"
