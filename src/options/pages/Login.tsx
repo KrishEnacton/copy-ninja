@@ -48,14 +48,6 @@ const OptionsLogin = () => {
             Sign in to your account
           </h1>
           <Form onSubmit={onSubmit} loading={loading} />
-          <div className="flex justify-between text-md">
-            <span>Don't have an account?</span>
-            <span>
-              <Link className="text-blue-500" to={'/signup'}>
-                Create Account
-              </Link>
-            </span>
-          </div>
         </div>
       </div>
     </Fragment>
