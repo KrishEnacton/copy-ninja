@@ -21,7 +21,7 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
 
   return (
     <div
-      className={`mt-4 border border-gray-300 p-2 rounded-md divide-y-2 overflow-y-auto divide-gray-200 mx-4 ${className}`}
+      className={`mt-4 border border-gray-300 p-2 md:p-4 rounded-md divide-y-2 overflow-y-auto divide-gray-200 mx-4 md:mx-0 ${className}`}
     >
       {allTopics?.map((list, index) => (
         <div key={index}>

@@ -59,8 +59,8 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
 
   return (
     <div className={`flex justify-between  flex-col ${className}`}>
-      <div className="px-4 py-1">
-        <div className="mt-2 flex rounded-md items-center">
+      <div className="px-4 md:px-0 py-1">
+        <div className="mt-2 flex rounded-md items-end">
           <Dropdown
             className=''
             id={'folder'}
@@ -69,23 +69,22 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
           <button
             type="button"
             onClick={() => setIsModal(true)}
-            className="items-center rounded-md  px-3 py-1 bg-indigo-600  text-sm font-semibold text-white hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="ml-4 items-center rounded-md  px-2 py-2 bg-indigo-600  text-sm font-semibold text-white hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            <PlusIcon className="w-5 h-5" />
+            Create Folder
           </button>
         </div>
       </div>
 
-      <div className="m-4">
+      <div className=" mx-4 my-2 md:m-0">
         <div className="mt-2 flex rounded-md shadow-sm">
           <div className="relative flex flex-grow items-stretch focus-within:z-10">
             <input
               type="text"
               name="topics"
               id="topics"
-              className={`block w-full ${
-                from === 'popup' ? 'rounded-l-md' : 'rounded-md'
-              } border-0 py-1.5 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+              className={`block w-full ${from === 'popup' ? 'rounded-l-md' : 'rounded-md'
+                } border-0 py-1.5 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
               placeholder="Search Topic"
             />
           </div>
@@ -127,7 +126,7 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
               >
                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                   <div>
-                    <div className="mt-3 text-center sm:mt-5">
+                    <div className="mt-3 md:mt-0 text-center sm:mt-5">
                       <Dialog.Title
                         as="h3"
                         className="text-base font-semibold leading-6 text-gray-900 mb-4"

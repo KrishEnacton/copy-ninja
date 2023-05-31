@@ -7,7 +7,7 @@ const Home: React.FC = () => {
   return (
     <Fragment>
       <Search from={"popup"} />
-      <ListView className={'h-[10rem]'} from="popup"/>
+      <ListView className={'h-[13rem]'} from="popup" />
     </Fragment>
   )
 }

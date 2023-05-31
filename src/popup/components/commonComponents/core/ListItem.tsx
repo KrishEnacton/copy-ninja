@@ -49,7 +49,7 @@ const ListItem = ({ className, from, item }: any) => {
     if (isEdit && inputRef.current) {
       inputRef.current.focus()
     }
-    console.log({isEdit})
+    console.log({ isEdit })
   }, [isEdit])
   return (
     <div
