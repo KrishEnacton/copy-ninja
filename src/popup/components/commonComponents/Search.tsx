@@ -4,8 +4,8 @@ import { SpinnerLoader } from './SpinnerLoader'
 import Dropdown from './core/Dropdown'
 import { PlusIcon } from '@heroicons/react/20/solid'
 import { getLocalStorage } from '../../../utils'
-import { Dialog, Transition } from '@headlessui/react'
 import { useNavigate } from 'react-router-dom'
+import { Transition, Dialog } from '@headlessui/react'
 
 const Search = ({ className, from }: { className?: string; from?: string }) => {
   const { getAllFolders, createFolder } = useSupabase()
@@ -69,32 +69,35 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
           <button
             type="button"
             onClick={() => setIsModal(true)}
-            className="items-center rounded-md  px-1 py-2.5 bg-indigo-600  text-sm font-semibold text-white hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="items-center rounded-md  px-3 py-1 bg-indigo-600  text-sm font-semibold text-white hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Create Folder
+            <PlusIcon className="w-5 h-5" />
           </button>
         </div>
       </div>
 
-
-      <div className='m-4'>
+      <div className="m-4">
         <div className="mt-2 flex rounded-md shadow-sm">
           <div className="relative flex flex-grow items-stretch focus-within:z-10">
             <input
               type="text"
               name="topics"
               id="topics"
-              className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className={`block w-full ${
+                from === 'popup' ? 'rounded-l-md' : 'rounded-md'
+              } border-0 py-1.5 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
               placeholder="Search Topic"
             />
           </div>
-          <button
-            type="button"
-            onClick={() => redirect()}
-            className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-          >
-            Add Topic
-          </button>
+          {from === 'popup' && (
+            <button
+              type="button"
+              onClick={() => redirect()}
+              className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            >
+              Add Topic
+            </button>
+          )}
         </div>
       </div>
       <Transition.Root show={isModal} as={Fragment}>
