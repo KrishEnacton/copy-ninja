@@ -1,0 +1,15 @@
+import React, { Fragment } from 'react'
+import Search from '../components/commonComponents/Search'
+import ListView from '../components/sections/ListSection'
+import { withAuth } from '../../options/components/HOC/withAuth'
+
+const Home: React.FC = () => {
+  return (
+    <Fragment>
+      <Search />
+      <ListView className={'h-[10rem]'} from="popup"/>
+    </Fragment>
+  )
+}
+
+export default withAuth(Home)
