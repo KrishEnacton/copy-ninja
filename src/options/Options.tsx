@@ -7,7 +7,7 @@ import SignUp from './pages/SignUp'
 
 function App() {
   return (
-    <MainLayout isOption={true} headerClassName="w-full" className={'flex flex-col items-center w-[700px] mx-auto'}>
+    <MainLayout isOption={true} headerClassName="w-full" className={'items-center w-[700px] mx-auto'}>
       <HashRouter>
         <Routes>
           <Route index={true} path="/" element={<OptionsLogin />} />

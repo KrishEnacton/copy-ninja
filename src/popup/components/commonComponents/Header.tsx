@@ -14,8 +14,8 @@ const Header = ({ className }: { className?: string }) => {
 
   return (
     <nav className={`bg-white border-gray-200 dark:bg-gray-900 relative ${className}`}>
-      <div className="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4 md:py-4 px-0">
-        {/* TOP HEADER PADDING */}
+      <div className="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4 md:py-4 md:px-0">
+        {/* ----TOP HEADER PADDING------ */}
         <a href="#" className="flex items-center">
           <img
             src={chrome.runtime.getURL('/img/CopyNinja.png')}
@@ -30,7 +30,7 @@ const Header = ({ className }: { className?: string }) => {
           <a
             href="#"
             onClick={() => setIsModal(true)}
-            className="py-2 px-3 flex text-gray-800 dark:text-white bg-slate-100 hover:bg-slate-200 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm  md:px-5 md:py-2.5 mr-1 md:mr-0 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+            className="py-2 px-3 flex text-gray-800 dark:text-white bg-slate-100 hover:bg-slate-200 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm  md:px-5 md:py-2.5 mr-1 md:mr-0 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800 border border-gray-300"
           >Logout
             <LogoutIcon className="h-5 w-5 ml-1" stroke="black" />
           </a>
