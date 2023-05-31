@@ -69,7 +69,8 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
           <button
             type="button"
             onClick={() => setIsModal(true)}
-            className="ml-4 items-center rounded-md  px-2 py-2 bg-indigo-600  text-sm font-semibold text-white hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="ml-4 items-center rounded-md  px-2 py-2 bg-indigo-600 md:w-1/5 w-2/4
+             text-sm font-semibold text-white hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Create Folder
           </button>
@@ -77,26 +78,25 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
       </div>
 
       <div className=" mx-4 my-2 md:m-0">
-        <div className="mt-2 flex rounded-md shadow-sm">
-          <div className="relative flex flex-grow items-stretch focus-within:z-10">
+        <div className="mt-2 flex rounded-md ">
+          <div className="shadow-sm relative flex flex-grow items-stretch focus-within:z-10">
             <input
               type="text"
               name="topics"
               id="topics"
-              className={`block w-full ${from === 'popup' ? 'rounded-l-md' : 'rounded-md'
+              className={`block w-full ${from === 'popup' ? 'rounded-md' : 'rounded-md'
                 } border-0 py-1.5 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
               placeholder="Search Topic"
             />
           </div>
-          {from === 'popup' && (
-            <button
-              type="button"
-              onClick={() => redirect()}
-              className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-            >
-              Add Topic
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => navigate('/create')}
+            className="w-2/6 md:w-1/6 ml-4 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            New Topic
+          </button>
+
         </div>
       </div>
       <Transition.Root show={isModal} as={Fragment}>

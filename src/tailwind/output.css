@@ -1244,8 +1244,8 @@ input:checked + .toggle-bg {
   height: 2rem;
 }
 
-.h-\[10rem\] {
-  height: 10rem;
+.h-\[13rem\] {
+  height: 13rem;
 }
 
 .h-\[450px\] {
@@ -1260,14 +1260,6 @@ input:checked + .toggle-bg {
   height: 100%;
 }
 
-.h-\[14rem\] {
-  height: 14rem;
-}
-
-.h-\[13rem\] {
-  height: 13rem;
-}
-
 .max-h-28 {
   max-height: 7rem;
 }
@@ -1277,6 +1269,10 @@ input:checked + .toggle-bg {
 }
 
 .w-1\/2 {
+  width: 50%;
+}
+
+.w-2\/4 {
   width: 50%;
 }
 
@@ -1314,6 +1310,14 @@ input:checked + .toggle-bg {
 
 .w-full {
   width: 100%;
+}
+
+.w-1\/6 {
+  width: 16.666667%;
+}
+
+.w-2\/6 {
+  width: 33.333333%;
 }
 
 .max-w-md {
@@ -2568,6 +2572,22 @@ input:checked + .toggle-bg {
 
   .md\:mt-0 {
     margin-top: 0px;
+  }
+
+  .md\:w-1\/5 {
+    width: 20%;
+  }
+
+  .md\:w-1\/4 {
+    width: 25%;
+  }
+
+  .md\:w-1\/6 {
+    width: 16.666667%;
+  }
+
+  .md\:w-full {
+    width: 100%;
   }
 
   .md\:space-y-6 > :not([hidden]) ~ :not([hidden]) {
