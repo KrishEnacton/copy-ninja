@@ -27,7 +27,6 @@ const Dropdown = ({
 
   useEffect(() => {
     setSelected(selectOptions[0])
-    console.log('check this out',{ selected, selectOptions })
   }, [])
 
 
