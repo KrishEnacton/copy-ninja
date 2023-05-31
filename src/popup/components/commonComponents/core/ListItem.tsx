@@ -1,4 +1,4 @@
-import { ChevronRightIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid'
+import { ChevronRightIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { SpinnerLoader } from '../SpinnerLoader'
 import { useNavigate } from 'react-router-dom'
@@ -48,7 +48,7 @@ const ListItem = ({ className, from, item }: any) => {
   }, [isEdit, inputRef])
   return (
     <div
-      className={`${className} group flex justify-between py-2`}
+      className={`${className} group flex justify-between py-2 text-indigo-500 font-medium`}
       onClick={() => {
         console.log({ from })
         if (from === 'popup') {
@@ -94,7 +94,7 @@ const ListItem = ({ className, from, item }: any) => {
           </div>
         )}
         <div className='group-hover:cursor-pointer'>
-          <TrashIcon className='w-6 h-6' onClick={() => deleteTopicHandler(item.id)} />
+          <TrashIcon className='w-6 h-6 text-black' onClick={() => deleteTopicHandler(item.id)} />
         </div>
       </div>
     </div>

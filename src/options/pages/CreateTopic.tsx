@@ -16,7 +16,7 @@ const Create: React.FC = () => {
   const [ctas, setCTAs] = useState<{ label: string; value: string }[]>([{ label: '', value: '' }])
   const [cta, setCTA] = useState<{ label: any; value: any }>()
 
-  const {createFolder} = useSupabase()
+  const { createFolder } = useSupabase()
 
   return (
     <Fragment>
@@ -199,9 +199,8 @@ const Create: React.FC = () => {
                           <Disclosure.Button className="flex w-full justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75">
                             <span>{ans.label}</span>
                             <ChevronUpIcon
-                              className={`${
-                                open ? 'rotate-180 transform' : ''
-                              } h-5 w-5 text-indigo-500`}
+                              className={`${open ? 'rotate-180 transform' : ''
+                                } h-5 w-5 text-indigo-500`}
                             />
                           </Disclosure.Button>
                           <button
@@ -248,9 +247,8 @@ const Create: React.FC = () => {
                           <Disclosure.Button className="flex w-full justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75">
                             <span>{ans.label}</span>
                             <ChevronUpIcon
-                              className={`${
-                                open ? 'rotate-180 transform' : ''
-                              } h-5 w-5 text-indigo-500`}
+                              className={`${open ? 'rotate-180 transform' : ''
+                                } h-5 w-5 text-indigo-500`}
                             />
                           </Disclosure.Button>
                           <button

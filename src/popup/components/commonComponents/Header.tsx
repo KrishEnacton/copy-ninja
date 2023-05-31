@@ -2,7 +2,7 @@ import { Fragment, useContext, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import LogoutIcon from '@heroicons/react/24/outline/ArrowRightOnRectangleIcon'
 
-const Header = ({ className }: { className?: string}) => {
+const Header = ({ className }: { className?: string }) => {
   const [isModal, setIsModal] = useState(false)
 
   function logout() {
@@ -29,9 +29,9 @@ const Header = ({ className }: { className?: string}) => {
           <a
             href="#"
             onClick={() => setIsModal(true)}
-            className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 mr-1 md:mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
-          >
-            <LogoutIcon className="h-5 w-5" stroke="black" />
+            className="flex text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm  md:px-5 md:py-2.5 mr-1 md:mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+          >Logout
+            <LogoutIcon className="h-5 w-5 ml-1" stroke="black" />
           </a>
         </div>
         <Transition.Root show={isModal} as={Fragment}>
