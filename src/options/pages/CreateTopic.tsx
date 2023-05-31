@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, ChevronUpIcon, PlusIcon, TrashIcon } from '@heroicons/react/20/solid'
+import { ArrowLeftIcon, ChevronUpIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import React, { Fragment, useEffect, useLayoutEffect, useState } from 'react'
 import InputGroup from '../components/InputGroup'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -6,43 +6,53 @@ import { Disclosure } from '@headlessui/react'
 import { withAuth } from '../components/HOC/withAuth'
 import useSupabase from '../../supabase/use-supabase'
 import { getLocalStorage } from '../../utils'
+import { TopicParams } from '../../utils/global'
+import { SpinnerLoader } from '../../popup/components/commonComponents/SpinnerLoader'
+import { PencilSquareIcon } from '@heroicons/react/24/outline'
 
 const Create: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [item, setItem] = useState<any>(null)
-  const [answers, setAnswers] = useState<{ label: string; value: string }[]>([
-    { label: '', value: '' },
-  ])
+  const [loading, setLoading] = useState<boolean>(false)
   const [answer, setAnswer] = useState<{ label: any; value: any }>()
-  const [topic, setTopic] = useState('')
+  const [topicName, setTopicName] = useState('')
   const [folder, setFolder] = useState<any>(null)
-  const [ctas, setCTAs] = useState<{ label: string; value: string }[]>([{ label: '', value: '' }])
   const [cta, setCTA] = useState<{ label: any; value: any }>()
 
-  const { createTopic } = useSupabase()
+  const { createTopic, updateTopic } = useSupabase()
 
-  async function submitHandler(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const result: any = await createTopic({
-      folderId: folder,
-      topic,
-    })
-    console.log({ result: result.data })
+  async function submitHandler(e?: React.FormEvent<HTMLFormElement>) {
+    e && e.preventDefault()
+    setLoading(true)
+    let result: any
+    let body: TopicParams
+    if (item !== null) {
+      console.log({ cta, answer })
+      if (cta) {
+        body = { ...item, answer: [...item.answer], cta: [...item.cta, cta], topic: topicName }
+        result = await updateTopic(body)
+      }
+      if (answer) {
+        body = { ...item, answer: [...item.answer, answer], cta: [...item.cta], topic: topicName }
+        result = await updateTopic(body)
+      }
+    } else {
+      result = await createTopic({
+        folderId: folder,
+        topic: topicName,
+      })
+    }
     if (result?.data?.[0]?.id) {
-      setItem(result.data)
+      setItem(result.data?.[0])
+      setLoading(false)
     }
   }
 
-  console.log(location.state)
-
   useLayoutEffect(() => {
     setItem(location.state)
+    setTopicName(location?.state?.topic)
   }, [])
-
-  useEffect(() => {
-    console.log(item)
-  }, [item])
 
   return (
     <Fragment>
@@ -67,11 +77,12 @@ const Create: React.FC = () => {
               <div className="relative flex flex-grow items-stretch focus-within:z-10">
                 <input
                   type="text"
-                  name="topic"
-                  id="topic"
+                  name="topicName"
+                  id="topicName"
+                  value={topicName}
                   className="block w-full rounded-none rounded-l-md border-0 py-2 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   placeholder="Enter Topic"
-                  onChange={(e) => setTopic(e.target.value)}
+                  onChange={(e) => setTopicName(e.target.value)}
                 />
               </div>
               {item === null && (
@@ -130,6 +141,7 @@ const Create: React.FC = () => {
                             type="text"
                             name={'Answer with Regex'}
                             id={'ans_label'}
+                            value={answer?.label}
                             className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0  sm:leading-6"
                             placeholder={'Answer with Regex'}
                             //@ts-ignore
@@ -145,6 +157,7 @@ const Create: React.FC = () => {
                           </label>
                           <input
                             type="text"
+                            value={answer?.value}
                             name={'Label for CTA'}
                             id={'cta_label'}
                             className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0  sm:leading-6"
@@ -158,13 +171,12 @@ const Create: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => {
-                            //@ts-ignore
-                            setAnswers((prev) => [...prev, answer])
+                            submitHandler()
                             setAnswer({ label: '', value: '' })
                           }}
                           className="rounded-md bg-indigo-600 px-10 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                          Add
+                          {loading ? <SpinnerLoader className="h-5 w-5" /> : ' Add'}
                         </button>
                       </div>
                     </div>
@@ -183,6 +195,7 @@ const Create: React.FC = () => {
                           <input
                             type="text"
                             name={'Answer with Regex'}
+                            value={cta?.label}
                             id={'ans_label'}
                             className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0  sm:leading-6"
                             placeholder={'Answer with Regex'}
@@ -200,6 +213,7 @@ const Create: React.FC = () => {
                           <input
                             type="text"
                             name={'Label for CTA'}
+                            value={cta?.value}
                             id={'cta_label'}
                             className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0  sm:leading-6"
                             placeholder={'Link with Regex Context'}
@@ -211,11 +225,13 @@ const Create: React.FC = () => {
                       <div className="flex justify-center items-center my-4">
                         <button
                           type="button"
-                          //@ts-ignore
-                          onClick={() => setCTAs((prev) => [...prev, cta])}
+                          onClick={() => {
+                            submitHandler()
+                            setCTA({ label: '', value: '' })
+                          }}
                           className="rounded-md bg-indigo-600 px-10 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                          Add
+                          {loading ? <SpinnerLoader className="h-5 w-5" /> : ' Add'}
                         </button>
                       </div>
                     </div>
@@ -225,7 +241,7 @@ const Create: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-4 text-xl font-bold">{topic}</div>
+          <div className="mt-4 text-xl font-bold">{item?.topic}</div>
           <div className="flex gap-x-16 w-full">
             <div className="w-full px-4 pt-16">
               <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
@@ -250,16 +266,12 @@ const Create: React.FC = () => {
                               <Disclosure.Button className="flex w-full justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75">
                                 <span>{ans?.label ?? ''}</span>
                                 <ChevronUpIcon
-                                  className={`${open ? 'rotate-180 transform' : ''
-                                    } h-5 w-5 text-indigo-500`}
+                                  className={`${
+                                    open ? 'rotate-180 transform' : ''
+                                  } h-5 w-5 text-indigo-500`}
                                 />
                               </Disclosure.Button>
-                              <button
-                                className="mt-1.5"
-                                onClick={() =>
-                                  setAnswers([...answers.filter((i) => i.label !== ans.label)])
-                                }
-                              >
+                              <button className="mt-1.5">
                                 <TrashIcon className="w-5 h-5" />
                               </button>
                             </div>
@@ -298,18 +310,19 @@ const Create: React.FC = () => {
                               <Disclosure.Button className="flex w-full justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75">
                                 <span>{ans?.label ?? ''}</span>
                                 <ChevronUpIcon
-                                  className={`${open ? 'rotate-180 transform' : ''
-                                    } h-5 w-5 text-indigo-500`}
+                                  className={`${
+                                    open ? 'rotate-180 transform' : ''
+                                  } h-5 w-5 text-indigo-500`}
                                 />
                               </Disclosure.Button>
-                              <button
-                                className="mt-1.5"
-                                onClick={() =>
-                                  setCTAs([...ctas.filter((i) => i.label !== ans.label)])
-                                }
-                              >
+                              <div className='flex gap-x-2'>
+                              <button className="mt-1.5">
+                                <PencilSquareIcon className="w-6 h-6" stroke='blue' />
+                              </button>
+                              <button className="mt-1.5">
                                 <TrashIcon className="w-5 h-5" />
                               </button>
+                              </div>
                             </div>
                             <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
                               {ans?.value ?? ''}
