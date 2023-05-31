@@ -60,9 +60,9 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
   return (
     <div className={`flex justify-between  flex-col ${className}`}>
       <div className="px-4 py-1">
-        <div className="mt-2 flex rounded-md align-middle">
+        <div className="mt-2 flex rounded-md items-center">
           <Dropdown
-            className="px-4 py-1"
+            className=''
             id={'folder'}
             selectOptions={allFolders.map((i: any) => i.name)}
           />
