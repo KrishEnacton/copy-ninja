@@ -78,7 +78,7 @@ const useSupabase = () => {
   async function getAllFolders() {
     try {
       const { data, error } = await supabase.from('tbl_folder').select('*')
-      setLocalStorage('allFolders', data?.map((i) => i.name))
+      setLocalStorage('allFolders', data)
       return { data, error }
     } catch (error) {}
   }
@@ -86,9 +86,12 @@ const useSupabase = () => {
   async function createTopic(body: TopicParams) {
     try {
       const { folderId, topic, answer, cta } = body
+      console.log({ body })
       const { data, error } = await supabase
         .from('tbl_topic')
-        .insert([{ folderId }, { topic }, { answer }, { cta }])
+        .insert([
+          { folder_id: folderId, topic: topic ?? '', answer: answer ?? [''], cta: cta ?? [''] },
+        ]).select()
       return { data, error }
     } catch (error) {
       console.log(error)
@@ -100,8 +103,9 @@ const useSupabase = () => {
       console.log(body, 'id')
       const { data, error } = await supabase
         .from('tbl_topic')
-        .update({ topic, answer, cta })
-        .eq('id', id).select()
+        .update([{ topic: topic ?? '', answer: answer ?? [''], cta: cta ?? [''] },])
+        .eq('id', id)
+        .select()
       return { data, error }
     } catch (error) {
       console.log(error)
@@ -127,7 +131,7 @@ const useSupabase = () => {
   }
   async function getAllTopicsOfFolder(folderId: string) {
     try {
-      const { data, error } = await supabase.from('tbl_topic').select('*').eq("folderId", folderId)
+      const { data, error } = await supabase.from('tbl_topic').select('*').eq('folderId', folderId)
       return { data, error }
     } catch (error) {
       console.log(error)
@@ -146,7 +150,7 @@ const useSupabase = () => {
     createTopic,
     updateTopic,
     deleteTopic,
-    getAllTopics
+    getAllTopics,
   }
 }
 

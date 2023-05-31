@@ -5,14 +5,17 @@ import Dropdown from './core/Dropdown'
 import { PlusIcon } from '@heroicons/react/20/solid'
 import { getLocalStorage } from '../../../utils'
 import { Dialog, Transition } from '@headlessui/react'
+import { useNavigate } from 'react-router-dom'
 
-const Search = ({ className }: { className?: string }) => {
+const Search = ({ className, from }: { className?: string; from?: string }) => {
   const { getAllFolders, createFolder } = useSupabase()
   const [isModal, setIsModal] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [folder, setFolder] = useState<string>('')
 
   const [allFolders, setAllFolders] = useState<string[]>([''])
+  const navigate = useNavigate()
+  const createTopicURL = chrome.runtime.getURL('/options.html#/create')
 
   function createFolderHandler() {
     setLoading(true)
@@ -33,12 +36,36 @@ const Search = ({ className }: { className?: string }) => {
     setAllFolders(getLocalStorage('allFolders') ?? [''])
   }, [])
 
+  function redirect() {
+    chrome.tabs.query({}, (tabs) => {
+      if (from === 'popup') {
+        console.log({ tabs })
+        if (!tabs.find((tab) => tab.url === createTopicURL)) {
+          chrome.tabs.create({
+            url: createTopicURL,
+          })
+        } else {
+          chrome.tabs.query({ currentWindow: true }, (tabs: any) => {
+            let tab = tabs.find((tab: any) => tab.url === createTopicURL)
+            chrome.tabs.update(tab.id, { active: true })
+          })
+        }
+      }
+      if (from === 'option') {
+        navigate("/create")
+      }
+    })
+  }
+
   return (
     <div className={`flex justify-between  flex-col ${className}`}>
       <div className="px-4 py-1">
-        <div className="mt-2 flex rounded-mdalign-middle">
-          <Dropdown className="" id={'folder'} selectOptions={allFolders} />
-
+        <div className="mt-2 flex rounded-md align-middle">
+          <Dropdown
+            className="px-4 py-1"
+            id={'folder'}
+            selectOptions={allFolders.map((i: any) => i.name)}
+          />
           <button
             type="button"
             onClick={() => setIsModal(true)}
@@ -63,9 +90,7 @@ const Search = ({ className }: { className?: string }) => {
         <div>
           <span className="isolate inline-flex rounded-md ">
             <button
-              onClick={() => {
-                window.open(chrome.runtime.getURL('/options.html#/create'))
-              }}
+              onClick={() => redirect()}
               type="button"
               className="ml-4 relative inline-flex align-middle gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
             >

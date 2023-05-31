@@ -42,10 +42,10 @@ const ListItem = ({ className, from, item }: any) => {
   }, [])
 
   useEffect(() => {
-    console.log('check', inputRef)
-    //@ts-ignore
-    if (inputRef.current) inputRef.current['focus'] = true
-  }, [isEdit, inputRef])
+    if (isEdit && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEdit]);
   return (
     <div
       className={`${className} group flex justify-between py-2 text-indigo-500 font-medium`}
@@ -67,14 +67,16 @@ const ListItem = ({ className, from, item }: any) => {
           <input
             ref={inputRef}
             type='text'
+            readOnly={!isEdit}
             className='border-none focus:border-none focus:ring-none focus:outline-none'
             value={updatedInput}
+            onBlur={() => setIsEdit(false)}
             onChange={(e) => setUpdatedInput(e.target.value)}
           />
           <button type='submit' className='hidden'></button>
         </form>
       ) : (
-        <div className='group-hover:cursor-pointer' onClick={() => navigate('/create')}>
+        <div className='group-hover:cursor-pointer' onClick={() => navigate('/create', {state: item})}>
           {item?.topic}
         </div>
       )}

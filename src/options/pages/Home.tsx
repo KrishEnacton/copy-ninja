@@ -18,7 +18,7 @@ const Home: React.FC = () => {
           New Topic
         </button>
       </div>
-      <Search className="w-full" />
+      <Search className="w-full" from='option' />
       <ListView className="w-[700px] h-[600px]" from={'option'} />
     </div>
   )
