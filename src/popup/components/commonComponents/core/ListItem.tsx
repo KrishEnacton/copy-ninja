@@ -68,7 +68,7 @@ const ListItem = ({ className, from, item }: any) => {
             ref={inputRef}
             type='text'
             readOnly={!isEdit}
-            className='border-none focus:border-none focus:ring-none focus:outline-none'
+            className='border-transparent focus:border-transparent focus:ring-0'
             value={updatedInput}
             onBlur={() => setIsEdit(false)}
             onChange={(e) => setUpdatedInput(e.target.value)}

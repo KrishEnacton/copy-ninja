@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import LogoutIcon from '@heroicons/react/24/outline/ArrowRightOnRectangleIcon'
 
