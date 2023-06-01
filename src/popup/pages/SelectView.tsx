@@ -8,20 +8,24 @@ import { selectedType } from '../recoil/atoms'
 import { useRecoilState } from 'recoil'
 import { withAuth } from '../../options/components/HOC/withAuth'
 import MainLayout from '../layouts/main'
+import { useLocation } from 'react-router-dom'
 
 const SelectView: React.FC = () => {
   const [selectedTopic, setSelectedTopic] = useRecoilState(selectedType)
+  const location = useLocation()
 
   return (
     <MainLayout>
-      <SectionLayout>
+      <SectionLayout topic={location.state.topic}>
         <Dropdown id={'topicType'} selectOptions={config.topicTypeOptions} />
         {selectedTopic === 'random' ? (
           <RandomSection />
         ) : selectedTopic === 'custom' ? (
           <CustomSection />
         ) : (
-          <div className='text-xl text-black font-semibold text-center justify-center my-10'>You haven't selected yet.</div>
+          <div className="text-xl text-black font-semibold text-center justify-center my-10">
+            You haven't selected yet.
+          </div>
         )}
       </SectionLayout>
     </MainLayout>
