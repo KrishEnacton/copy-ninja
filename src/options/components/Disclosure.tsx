@@ -6,10 +6,14 @@ const DisclosureComponent = ({
   index,
   editHandler,
   deleteHandler,
+  loading,
+  setloading,
 }: {
   ans: any
   index: number
   editHandler: any
+  loading?: any,
+  setloading?: any
   deleteHandler: any
 }) => {
   return (

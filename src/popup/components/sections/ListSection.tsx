@@ -6,57 +6,92 @@ import { isEditState } from '../../../options/recoil/atoms'
 import { useNavigate } from 'react-router-dom'
 import PopupList from '../commonComponents/core/PopupList'
 import OptionList from '../commonComponents/core/OptionList'
+import { searchInputState, selectedFolder } from '../../recoil/atoms'
 
 const ListView = ({ className, from }: { className?: string; from?: string }) => {
   const navigate = useNavigate()
   const [allTopics, setAllTopics] = useState<any>(null)
-  const [isEditTopic, setIsEditTopic] = useRecoilState(isEditState)
-  const [selectedFolder, setSelectedFolder] = useRecoilState(selectedFolderState)
-  const [searchInput, setSearchInput] = useRecoilState(searchInputState)
+  const [filteredTopic, setFilteredTopic] = useState<any>([])
+  const [isEditTopic] = useRecoilState(isEditState)
+  const [_selectedFolder, _setSelectedFolder] = useRecoilState(selectedFolder)
+  const [searchInput] = useRecoilState(searchInputState)
   const { getAllTopics } = useSupabase()
+
   useEffect(() => {
     getAllTopics().then((res) => {
+      setFilteredTopic
       setAllTopics(res?.data)
     })
   }, [isEditTopic])
-  
+
   useLayoutEffect(() => {
     setAllTopics(getLocalStorage('allTopics'))
   }, [])
+
+  useEffect(() => {
+    if (_selectedFolder?.id && allTopics?.length > 0) {
+      if (searchInput === '') {
+        setFilteredTopic((prev) =>
+          allTopics.filter((item) => item.folder_id === _selectedFolder.id),
+        )
+      } else {
+        setFilteredTopic((prev) =>
+          allTopics
+            .filter((item) => item.folder_id === _selectedFolder.id)
+            .filter((a) => a.topic.toLowerCase().includes(searchInput.toLowerCase())),
+        )
+      }
+    } else {
+    }
+    return () => {}
+  }, [_selectedFolder, allTopics, searchInput])
 
   return (
     <div
       className={`mt-4 border border-gray-300 p-2 md:p-4 rounded-md divide-y-2 overflow-y-auto divide-gray-200 mx-4 md:mx-0 ${className}`}
     >
-      {allTopics?.filter(item => item?.folder_id === selectedFolder?.id).filter(item => item.topic.includes(searchInput))?.map((list, index) => (
-        <div key={index}>
-          {from === 'popup' ? (
-            <PopupList
-              className={'text-lg px-4'}
-              item={list}
-              onItemClick={() => {
-                navigate('/select', { state: list })
-              }}
-              ModalChild={undefined}
-              SideButton={undefined}
-              isModal={undefined}
-            />
+      {filteredTopic?.length > 0 ? (
+        <>
+          {' '}
+          {filteredTopic?.map((list, index) => (
+            <div key={index}>
+              {from === 'popup' ? (
+                <PopupList
+                  className={'text-lg px-4'}
+                  item={list}
+                  onItemClick={() => {
+                    navigate('/select', { state: list })
+                  }}
+                  ModalChild={undefined}
+                  SideButton={undefined}
+                  isModal={undefined}
+                />
+              ) : (
+                <OptionList
+                  className={'text-lg px-4'}
+                  item={list}
+                  onItemClick={() => {
+                    navigate('/create', { state: list })
+                  }}
+                />
+              )}
+            </div>
+          ))}
+        </>
+      ) : (
+        <p>
+          No topic found for <span className="font-bold">'{_selectedFolder.name}'</span> folder{' '}
+          {searchInput.length > 0 ? (
+            <span>
+              and this search key word <span className="font-bold">'{searchInput}'</span>{' '}
+            </span>
           ) : (
-            <OptionList
-              className={'text-lg px-4'}
-              item={list}
-              onItemClick={() => {
-                navigate('/create', { state: list })
-              }}
-            />
+            ''
           )}
-        </div>
-      ))}
+        </p>
+      )}
     </div>
   )
 }
 
 export default ListView
-
-
-// allTopics?.filter(item => item?.folder_id === selectedFolder?.id)
