@@ -160,6 +160,7 @@ const Create: React.FC = () => {
         answerdeleteLoading: false,
         ctadeleLoading: false,
       })
+
     }
   }
 
@@ -436,6 +437,7 @@ const Create: React.FC = () => {
                         index={index}
                         loading={loading}
                         setloading={setLoading}
+
                       />
                     ))
                 ) : (

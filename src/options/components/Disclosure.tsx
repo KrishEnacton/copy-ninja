@@ -12,9 +12,9 @@ const DisclosureComponent = ({
   ans: any
   index: number
   editHandler: any
-  deleteHandler: any,
   loading?: any,
   setloading?: any
+  deleteHandler: any
 }) => {
   return (
     <Disclosure as="div" className="my-2" key={index}>
