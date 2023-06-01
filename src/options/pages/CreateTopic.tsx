@@ -9,7 +9,6 @@ import { SpinnerLoader } from '../../popup/components/commonComponents/SpinnerLo
 import DisclosureComponent from '../components/Disclosure'
 import MainLayout from '../../popup/layouts/main'
 import { v4 as uuidv4 } from 'uuid'
-import InputGroup from '../components/InputGroup'
 
 const Create: React.FC = () => {
   const navigate = useNavigate()
@@ -227,7 +226,16 @@ const Create: React.FC = () => {
                         >
                           Topic Answer
                         </label>
-                        <input
+                        <textarea
+                          rows={4}
+                          value={answer?.value}
+                          name={'Label for CTA'}
+                          id={'topic_ans_label'}
+                          placeholder={'Link with Regex Context'}
+                          onChange={(e) => setAnswer({ ...answer, value: e.target.value })}
+                          className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500"
+                        />
+                        {/* <input
                           type="text"
                           value={answer?.value}
                           name={'Label for CTA'}
@@ -236,7 +244,7 @@ const Create: React.FC = () => {
                           placeholder={'Link with Regex Context'}
                           //@ts-ignore
                           onChange={(e) => setAnswer({ ...answer, value: e.target.value })}
-                        />
+                        /> */}
                       </div>
                     </div>
                     <div className="flex justify-center items-center mt-4">
@@ -291,8 +299,8 @@ const Create: React.FC = () => {
                         >
                           CTA Answer
                         </label>
-                        <input
-                          type="text"
+                        <textarea
+                          rows={4}
                           name={'Label for CTA'}
                           value={cta?.value}
                           id={'cta_ans_label'}
