@@ -95,7 +95,6 @@ const useSupabase = () => {
   async function createTopic(body: TopicParams) {
     try {
       const { folderId, topic, answer, cta } = body
-      console.log({ body })
       const { data, error } = await supabase
         .from('tbl_topic')
         .insert([{ folder_id: folderId, topic: topic ?? '', answer: answer ?? [], cta: cta ?? [] }])
