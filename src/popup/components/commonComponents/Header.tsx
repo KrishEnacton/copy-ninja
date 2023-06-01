@@ -10,7 +10,7 @@ const Header = ({ className }: { className?: string }) => {
   const [user, setUser] = useRecoilState(userState)
   const navigate = useNavigate()
   function logout() {
-    localStorage.removeItem('user')
+    localStorage.clear()
     setIsModal(false)
     setUser(null)
   }

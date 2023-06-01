@@ -28,9 +28,9 @@ const SelectView: React.FC = () => {
           selected={selectedTopic}
           listData={config._topicTypeOptions}
         />
-        {selectedTopic.name === 'random' ? (
+        {selectedTopic.name === 'Random' ? (
           <RandomSection state={location.state}/>
-        ) : selectedTopic.name === 'custom' ? (
+        ) : selectedTopic.name === 'Custom' ? (
           <CustomSection state={location.state} />
         ) : (
           <div className="text-xl text-black font-semibold text-center justify-center my-10">

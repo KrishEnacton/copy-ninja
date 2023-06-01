@@ -4,7 +4,7 @@ export const config = {
   SUPABASE_URL: 'https://yspyawiywinibfpmvygj.supabase.co',
   topicTypeOptions: ['random', 'custom'],
   _topicTypeOptions: [
-    { id: 1, name: 'random' },
-    { id: 2, name: 'custom' },
+    { id: 1, name: 'Random' },
+    { id: 2, name: 'Custom' },
   ],
 }

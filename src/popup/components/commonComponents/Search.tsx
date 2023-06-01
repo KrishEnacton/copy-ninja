@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import useSupabase from '../../../supabase/use-supabase'
 import { SpinnerLoader } from './SpinnerLoader'
 import Dropdown from './core/Dropdown'
@@ -31,6 +31,12 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
 
   const navigate = useNavigate()
   const createTopicURL = chrome.runtime.getURL('/options.html#/home')
+
+  useEffect(() => {
+    if (getLocalStorage('allFolders')?.[0]) {
+      _setSelectedFolder(getLocalStorage('allFolders')?.[0])
+    }
+  }, [getLocalStorage('allFolders') || []])
 
   function createFolderHandler() {
     setLoading(true)

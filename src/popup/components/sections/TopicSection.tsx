@@ -8,14 +8,14 @@ const TopicSection = () => {
   const location = useLocation()
 
   return (
-    <div className="px-2 py-8 text-lg text-black">
+    <div className="px-2 py-6 text-lg text-black">
       <div className="flex gap-x-1">
         <span className="text-base font-semibold text-indigo-500">Answer:</span>
         <span className="text-base font-medium">Create a react application</span>
       </div>
       <div>
         <CustomInput
-          className={'accent-pink-500 w-full h-[186px]'}
+          className={'accent-pink-500 w-full h-[100px]'}
           type={'textarea'}
           name={'edit_ans'}
           id={'edit_ans'}
@@ -28,8 +28,8 @@ const TopicSection = () => {
       </div>
       <div>
         <CustomInput
-          className={'accent-pink-500 w-full rounded-md'}
-          type={'text'}
+          className={'accent-pink-500 w-full h-[100px]'}
+          type={'textarea'}
           name={'edit_cta'}
           id={'edit_cta'}
           value={location.state.cta}

@@ -1227,12 +1227,12 @@ input:checked + .toggle-bg {
   height: 2rem;
 }
 
-.h-\[13rem\] {
-  height: 13rem;
+.h-\[100px\] {
+  height: 100px;
 }
 
-.h-\[186px\] {
-  height: 186px;
+.h-\[13rem\] {
+  height: 13rem;
 }
 
 .h-\[450px\] {
@@ -1788,6 +1788,11 @@ input:checked + .toggle-bg {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+
+.py-6 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 
 .py-8 {
