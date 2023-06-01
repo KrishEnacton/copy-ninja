@@ -9,7 +9,6 @@ import {
   selectedType,
 } from '../../recoil/atoms'
 import { useRecoilState } from 'recoil'
-import { useLocation } from 'react-router-dom'
 import KKDropdown from '../commonComponents/core/KKDropdown'
 import { useEffect, useState } from 'react'
 
@@ -17,6 +16,10 @@ const CustomSection = ({ state }) => {
   const [query, setQuery] = useRecoilState<QueryProps>(queryParams)
   const [selectedAnswer, setSelectedAnswer] = useState(state.answer[0])
   const [selectedCTA, setSelectedCTA] = useState(state.cta[0])
+
+  useEffect(() => {
+    setQuery({ answer: selectedAnswer, cta: selectedCTA })
+  }, [])
 
   return (
     <div className="px-2 py-4 text-lg text-black">

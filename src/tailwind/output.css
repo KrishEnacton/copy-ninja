@@ -1243,6 +1243,10 @@ input:checked + .toggle-bg {
   height: 100%;
 }
 
+.h-\[186px\] {
+  height: 186px;
+}
+
 .max-h-28 {
   max-height: 7rem;
 }

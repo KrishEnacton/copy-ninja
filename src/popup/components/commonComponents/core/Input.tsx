@@ -25,6 +25,7 @@ const CustomInput = ({
     <Fragment>
       {type === 'textarea' ? (
         <textarea
+        value={value}
           className={`p-2 rounded-md text-black ${className}`}
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => handleInput(e)}
         />
