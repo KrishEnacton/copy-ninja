@@ -15,7 +15,7 @@ export const selectedType = atom({
 
 export const queryParams = atom({
   key: 'queryParams',
-  default: { answer: '', cta: '', isCta: false } as QueryProps,
+  default: { answer: '', cta: '', isCta: true } as QueryProps,
 })
 
 export const selectedFolderState = atom({

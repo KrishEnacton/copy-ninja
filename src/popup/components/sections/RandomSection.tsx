@@ -1,12 +1,11 @@
-import CustomInput from "../commonComponents/core/Input"
+import CTASection from './CTASection'
 
 const RandomSection = () => {
-    return(
-        <div className="flex justify-between px-2 py-8 text-lg text-black">
-            <div>CTA</div>
-            <div><CustomInput checked={true} className={"accent-pink-500 cursor-pointer"} type={"checkbox"} name={"cta"} id={"cta"}/></div>
-        </div>
-    )
+  return (
+    <div className="px-2 py-4 text-lg text-black">
+      <CTASection />
+    </div>
+  )
 }
 
 export default RandomSection
