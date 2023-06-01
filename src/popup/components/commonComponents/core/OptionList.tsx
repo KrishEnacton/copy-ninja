@@ -7,6 +7,7 @@ import { useRecoilState } from 'recoil'
 import { isEditState } from '../../../../options/recoil/atoms'
 import { Dialog } from '@headlessui/react'
 import Modal from './Modal'
+import { XMarkIcon } from '@heroicons/react/20/solid'
 
 const OptionList = ({ className, item, onItemClick }: any) => {
   const { updateTopic, deleteTopic } = useSupabase()
@@ -88,7 +89,7 @@ const OptionList = ({ className, item, onItemClick }: any) => {
             }}
           >
             {isEdit ? (
-              <CheckCircleIcon className="w-6 h-6" />
+              <XMarkIcon className="w-6 h-6" />
             ) : loading.editLoading ? (
               <SpinnerLoader className="w-6 h-6" />
             ) : (

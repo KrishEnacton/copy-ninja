@@ -1,7 +1,17 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronUpIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 
-const DisclosureComponent = ({ ans, index }: { ans: any; index: number }) => {
+const DisclosureComponent = ({
+  ans,
+  index,
+  editHandler,
+  deleteHandler,
+}: {
+  ans: any
+  index: number
+  editHandler: any
+  deleteHandler: any
+}) => {
   return (
     <Disclosure as="div" className="my-2" key={index}>
       {({ open }) => (
@@ -14,10 +24,10 @@ const DisclosureComponent = ({ ans, index }: { ans: any; index: number }) => {
               />
             </Disclosure.Button>
             <div className="flex gap-x-2">
-              <button className="mt-1.5">
-                <PencilSquareIcon className="w-6 h-6" stroke='blue'/>
+              <button className="mt-1.5" onClick={editHandler}>
+                <PencilSquareIcon className="w-6 h-6" stroke="blue" />
               </button>
-              <button className="mt-1.5">
+              <button className="mt-1.5" onClick={deleteHandler}>
                 <TrashIcon className="w-5 h-5" />
               </button>
             </div>
