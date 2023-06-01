@@ -18,13 +18,13 @@ export const queryParams = atom({
 })
 
 export const selectedFolderState = atom({
-    key: 'selectedFolderState',
-    default: null as any
+  key: 'selectedFolderState',
+  default: null as any,
 })
 
 export const searchInputState = atom({
-    key: 'searchInputState',
-    default: ""  as string
+  key: 'searchInputState',
+  default: '' as string,
 })
 export const selectedFolder = atom({
   key: 'selectedFolder',
@@ -32,5 +32,9 @@ export const selectedFolder = atom({
     (getLocalStorage('defaultSelectedFolder') as any) ||
     (getLocalStorage('allFolders')?.[0] as any) ||
     ({} as any),
+})
 
+export const allFoldersAtom = atom({
+  key: 'allFoldersAtom',
+  default: [] as any,
 })

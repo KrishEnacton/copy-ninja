@@ -54,11 +54,10 @@ const KKDropdown = ({
                 return (
                   <Menu.Item key={index}>
                     {({ active }) => (
-                      <a
-                        href="#"
+                      <div
                         className={classNames(
                           active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                          'block px-4 py-2 text-left text-sm',
+                          'block px-4 py-2 text-left text-sm cursor-pointer',
                         )}
                         onClick={() => {
                           setSelected(selectOption)
@@ -67,7 +66,7 @@ const KKDropdown = ({
                         }}
                       >
                         {selectOption.name}
-                      </a>
+                      </div>
                     )}
                   </Menu.Item>
                 )

@@ -63,10 +63,10 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
             setSelected={setSelected}
             listData={getLocalStorage('allFolders') || []}
           />
-          <Dropdown
+          {/* <Dropdown
             id={'folder'}
             selectOptions={getLocalStorage('allFolders')}
-          />
+          /> */}
           {from === 'option' && (
             <button
               type="button"
