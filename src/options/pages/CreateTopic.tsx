@@ -8,6 +8,8 @@ import { TopicParams } from '../../utils/global'
 import { SpinnerLoader } from '../../popup/components/commonComponents/SpinnerLoader'
 import DisclosureComponent from '../components/Disclosure'
 import MainLayout from '../../popup/layouts/main'
+import { v4 as uuidv4 } from 'uuid'
+import InputGroup from '../components/InputGroup'
 
 const Create: React.FC = () => {
   const navigate = useNavigate()
@@ -17,11 +19,19 @@ const Create: React.FC = () => {
     answerLoading: false,
     ctaLoading: false,
   })
-  const [answer, setAnswer] = useState<{ label: any; value: any }>()
+  const [answer, setAnswer] = useState<{ label?: string; value?: string; id?: string }>()
+  const [cta, setCTA] = useState<{ label: string; value: string; id?: string }>()
   const [topicName, setTopicName] = useState('')
   const [isEmpty, setIsEmpty] = useState<boolean>(false)
   const [folder, setFolder] = useState<any>(null)
-  const [cta, setCTA] = useState<{ label: any; value: any }>()
+  const [answersEdit, setIsAnswersEdit] = useState<{ ans?: boolean; cta?: boolean }>({
+    ans: false,
+    cta: false,
+  })
+  const [answersDelete, setIsAnswersDelete] = useState<{ ans?: boolean; cta?: boolean }>({
+    ans: false,
+    cta: false,
+  })
 
   const { createTopic, updateTopic } = useSupabase()
 
@@ -35,8 +45,6 @@ const Create: React.FC = () => {
     let result: any
     let body: TopicParams
 
-    console.log({ item })
-
     if (topicName) {
       if (item !== null) {
         if (cta) {
@@ -45,13 +53,14 @@ const Create: React.FC = () => {
         }
         if (answer) {
           body = { ...item, answer: [...item?.answer, answer], cta: item.cta, topic: topicName }
-          console.log({answer, body})
+          console.log({ answer, body })
           result = await updateTopic(body)
         }
       } else {
         result = await createTopic({
           folderId: folder,
           topic: topicName,
+          id: uuidv4(),
         })
       }
       if (result?.data?.[0]?.id) {
@@ -60,6 +69,85 @@ const Create: React.FC = () => {
       }
     } else {
       setIsEmpty(true)
+    }
+  }
+
+  async function editAnswersHandler() {
+    let result: any
+    let body: TopicParams
+    if (answersEdit.ans) {
+      setLoading({ answerLoading: true })
+      if (answer?.id) {
+        body = {
+          ...item,
+          answer: item.answer.map((item) => {
+            if (item.id === answer.id) {
+              item = answer
+            }
+            return item
+          }),
+          cta: item.cta,
+          topic: topicName,
+        }
+        console.log({ body })
+        result = await updateTopic(body)
+      }
+    }
+    if (answersEdit?.cta) {
+      if (answer?.id) {
+        body = {
+          ...item,
+          cta: item.cta.map((item) => {
+            if (item.id === cta?.id) {
+              item = cta
+            }
+            return item
+          }),
+          answer: item.answer,
+          topic: topicName,
+        }
+        console.log({ body })
+        result = await updateTopic(body)
+      }
+    }
+    if (result?.data?.[0]?.id) {
+      setItem(result.data?.[0])
+      setIsAnswersEdit({ ans: false, cta: false })
+      setLoading({ answerLoading: false, ctaLoading: false })
+    }
+  }
+  async function deleteHandler() {
+    let result: any
+    let body: TopicParams
+    if (answersEdit.ans) {
+      setLoading({ answerLoading: true })
+      if (answer?.id) {
+        body = {
+          ...item,
+          answer: item.answer.filter((item) => item.id === answer?.id),
+          cta: item.cta,
+          topic: topicName,
+        }
+        console.log({ body })
+        result = await updateTopic(body)
+      }
+    }
+    if (answersEdit?.cta) {
+      if (answer?.id) {
+        body = {
+          ...item,
+          cta: item.cta.filter((item) => item.id === cta?.id),
+          answer: item.answer,
+          topic: topicName,
+        }
+        console.log({ body })
+        result = await updateTopic(body)
+      }
+    }
+    if (result?.data?.[0]?.id) {
+      setItem(result.data?.[0])
+      setIsAnswersEdit({ ans: false, cta: false })
+      setLoading({ answerLoading: false, ctaLoading: false })
     }
   }
 
@@ -191,7 +279,11 @@ const Create: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => {
-                            submitHandler()
+                            if (answersEdit.ans || answersEdit.cta) {
+                              editAnswersHandler()
+                            } else if (answersDelete.ans || answersDelete.cta) {
+                              deleteHandler()
+                            } else submitHandler()
                             setAnswer({ label: '', value: '' })
                           }}
                           className="rounded-md bg-indigo-600 px-10 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -201,6 +293,22 @@ const Create: React.FC = () => {
                       </div>
                     </div>
                   </div>
+                  {/* <InputGroup
+                    inputAnswerHandler={(e) => setAnswer({ ...answer, value: e.target.value })}
+                    inputLabelHandler={(e) => setAnswer({ ...answer, label: e.target.value })}
+                    inputSubmitHandler={() => {
+                      if (answersEdit.ans || answersEdit.cta) {
+                        editAnswersHandler()
+                      } else if (answersDelete.ans || answersDelete.cta) {
+                        deleteHandler()
+                      } else submitHandler()
+                      setAnswer({ label: '', value: '' })
+                    }}
+                    loading={loading}
+                    input={answer}
+                    inputValue={"Topic"}
+                  /> */}
+
                   <div className="flex flex-col justify-center items-center mt-4  border border-gray-300 p-4 rounded-xl bg-slate-100">
                     <div className="text-lg font-bold">CTA</div>
                     <div className="w-[306px]">
@@ -278,7 +386,20 @@ const Create: React.FC = () => {
                       }
                       return false
                     })
-                    .map((ans, index: number) => <DisclosureComponent ans={ans} index={index} />)
+                    .map((ans, index: number) => (
+                      <DisclosureComponent
+                        editHandler={() => {
+                          setAnswer({ label: ans.label, value: ans.value, id: ans.id })
+                          setIsAnswersEdit({ ans: true })
+                        }}
+                        deleteHandler={() => {
+                          setAnswer({ label: ans.label, value: ans.value, id: ans.id })
+                          setIsAnswersDelete({ ans: true })
+                        }}
+                        ans={ans}
+                        index={index}
+                      />
+                    ))
                 ) : (
                   <div className="text-lg font-semibold text-center">No answers yet</div>
                 )}
@@ -299,7 +420,20 @@ const Create: React.FC = () => {
                       }
                       return false
                     })
-                    .map((ans, index: number) => <DisclosureComponent ans={ans} index={index} />)
+                    .map((ans, index: number) => (
+                      <DisclosureComponent
+                        ans={ans}
+                        editHandler={() => {
+                          setCTA({ label: ans.label, value: ans.value, id: ans.id })
+                          setIsAnswersEdit({ cta: true })
+                        }}
+                        deleteHandler={() => {
+                          setCTA({ label: ans.label, value: ans.value, id: ans.id })
+                          setIsAnswersDelete({ cta: true })
+                        }}
+                        index={index}
+                      />
+                    ))
                 ) : (
                   <div className="text-lg font-semibold text-center">No answers yet</div>
                 )}

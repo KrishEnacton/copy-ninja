@@ -1,13 +1,17 @@
 import Dropdown from '../commonComponents/core/Dropdown'
 import CustomInput from '../commonComponents/core/Input'
 import { QueryProps } from '../../../utils/global'
-import { queryParams } from '../../recoil/atoms'
+import { queryParams, searchInputState, selectedFolder } from '../../recoil/atoms'
 import { useRecoilState } from 'recoil'
 import { useLocation } from 'react-router-dom'
+import KKDropdown from '../commonComponents/core/KKDropdown'
+import { useState } from 'react'
 
 const CustomSection = () => {
   const [query, setQuery] = useRecoilState<QueryProps>(queryParams)
   const location = useLocation()
+  const [searchInput, setSearchInput] = useRecoilState(searchInputState)
+  const [label, setLabel]= useState(null)
 
   return (
     <div className="px-2 py-4 text-lg text-black">
