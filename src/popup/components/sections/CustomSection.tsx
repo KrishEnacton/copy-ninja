@@ -1,9 +1,6 @@
-import Dropdown from '../commonComponents/core/Dropdown'
-import CustomInput from '../commonComponents/core/Input'
 import { QueryProps } from '../../../utils/global'
-import { queryParams, searchInputState, selectedFolder } from '../../recoil/atoms'
+import { queryParams } from '../../recoil/atoms'
 import { useRecoilState } from 'recoil'
-import { useLocation } from 'react-router-dom'
 import KKDropdown from '../commonComponents/core/KKDropdown'
 import { useState } from 'react'
 
@@ -17,13 +14,15 @@ const CustomSection = ({ state }) => {
       <div className="flex justify-between">
         <div className="text-lg font-semibold text-indigo-500">CTA</div>
         <div>
-          <CustomInput
+          <input
             className={'accent-indigo-500 cursor-pointer'}
             type={'checkbox'}
-            name={'cta'}
             id={'cta'}
-            checked={true}
-            setInput={(value: boolean) => setQuery((prevState) => ({ ...prevState, isCta: value }))}
+            name={'cta'}
+            checked={query.isCta}
+            onChange={(e) => {
+              setQuery((prevState) => ({ ...prevState, isCta: e.target.checked as any }))
+            }}
           />
         </div>
       </div>
@@ -37,16 +36,18 @@ const CustomSection = ({ state }) => {
           labelKey={'label'}
         />
       </div>
-      <div className="flex flex-col">
-        <div className="text-base font-medium ">Select CTA:</div>
-        <KKDropdown
-          id={'select-cta'}
-          setSelected={setSelectedCTA}
-          selected={selectedCTA}
-          listData={state?.cta || []}
-          labelKey={'label'}
-        />
-      </div>
+      {query.isCta && (
+        <div className="flex flex-col">
+          <div className="text-base font-medium ">Select CTA:</div>
+          <KKDropdown
+            id={'select-cta'}
+            setSelected={setSelectedCTA}
+            selected={selectedCTA}
+            listData={state?.cta || []}
+            labelKey={'label'}
+          />
+        </div>
+      )}
     </div>
   )
 }
