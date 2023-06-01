@@ -1231,6 +1231,10 @@ input:checked + .toggle-bg {
   height: 13rem;
 }
 
+.h-\[186px\] {
+  height: 186px;
+}
+
 .h-\[450px\] {
   height: 450px;
 }
@@ -1241,10 +1245,6 @@ input:checked + .toggle-bg {
 
 .h-full {
   height: 100%;
-}
-
-.h-\[186px\] {
-  height: 186px;
 }
 
 .max-h-28 {

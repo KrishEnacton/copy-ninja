@@ -59,3 +59,8 @@ export const generatedCTAState = atom({
   key: 'generatedAnswer',
   default: "" as string | undefined
 })
+
+export const topicAtom = atom({
+  key:'topicAtom',
+  default: "" as string
+})

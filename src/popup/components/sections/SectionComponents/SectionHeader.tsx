@@ -1,8 +1,11 @@
 import { ArrowLeftIcon, HomeIcon } from '@heroicons/react/20/solid'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { topicAtom } from '../../../recoil/atoms'
+import { useRecoilState } from 'recoil'
 
-const SectionHeader: React.FC<{ topic: string }> = ({ topic = '' }) => {
+const SectionHeader: React.FC = () => {
   const navigate = useNavigate()
+  const [topic, setTopic] = useRecoilState(topicAtom)
   return (
     <div className="flex justify-between text-lg items-center">
       <div className="py-2 rounded-md cursor-pointer" onClick={() => navigate('/home')}>

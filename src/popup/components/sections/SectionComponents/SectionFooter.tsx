@@ -5,24 +5,24 @@ import { useRecoilState } from 'recoil'
 import { generatedAnswerState, generatedCTAState, queryParams } from '../../../recoil/atoms'
 import { generateRandomSentence } from '../../../../utils'
 import copy from 'copy-to-clipboard'
+import { useState } from 'react'
 
 const SectionFooter = ({ isTopic }: { isTopic?: boolean }) => {
   const [query, setQuery] = useRecoilState<QueryProps>(queryParams)
-  const [generatedAns, setGeneratedAns] = useRecoilState(generatedAnswerState)
-  const [generatedCTA, setGeneratedCTA] = useRecoilState(generatedCTAState)
   const navigate = useNavigate()
+  const [isCopied, setIsCopied] = useState(false);
 
-  console.log({ query })
+  const [kkans, setKkans] = useState('');
+  const [kkcta, setKkcta] = useState('');
+
 
   function generate_random_string() {
-    console.log({ query }, 'random')
     //@ts-ignore
     const ans: any = generateRandomSentence(query?.answer?.value)
     //@ts-ignore
     const cta: any = generateRandomSentence(query?.cta?.value)
-    console.log({ ans, cta })
-    setGeneratedAns(ans)
-    setGeneratedCTA(cta)
+    setKkcta(cta);
+    setKkans(ans)
     navigate('/topic', { state: { ans, cta } })
   }
   return (
@@ -38,9 +38,13 @@ const SectionFooter = ({ isTopic }: { isTopic?: boolean }) => {
       ) : (
         <CustomButton
           className={`px-8 py-3 rounded-lg w-1/2 bg-indigo-600 text-sm font-semibold text-white hover:bg-indigo-700`}
-          name={`Copy`}
+          name={isCopied?'Copied':`Copy`}
           onclick={() => {
-            copy(generatedAns)
+            copy(kkans+'\n'+kkcta)
+            setIsCopied(true)
+            setTimeout(() => {
+              setIsCopied(false)
+            }, 1000);
           }}
         />
       )}

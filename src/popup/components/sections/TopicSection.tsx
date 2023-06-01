@@ -1,9 +1,12 @@
+import { useRecoilState } from 'recoil'
 import CustomInput from '../commonComponents/core/Input'
 import { useLocation } from 'react-router-dom'
+import { topicAtom } from '../../recoil/atoms'
+import { useEffect } from 'react'
 
 const TopicSection = () => {
   const location = useLocation()
-  console.log(location)
+
   return (
     <div className="px-2 py-8 text-lg text-black">
       <div className="flex gap-x-1">

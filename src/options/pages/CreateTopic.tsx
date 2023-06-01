@@ -59,7 +59,6 @@ const Create: React.FC = () => {
         }
         if (answer) {
           body = { ...item, answer: [...item?.answer, answer], cta: item.cta, topic: topicName }
-          console.log({ answer, body })
           result = await updateTopic(body)
         }
       } else {
@@ -95,7 +94,6 @@ const Create: React.FC = () => {
           cta: item.cta,
           topic: topicName,
         }
-        console.log({ body })
         result = await updateTopic(body)
       }
     }
@@ -112,7 +110,6 @@ const Create: React.FC = () => {
           answer: item.answer,
           topic: topicName,
         }
-        console.log({ body })
         result = await updateTopic(body)
       }
     }
@@ -134,7 +131,6 @@ const Create: React.FC = () => {
           cta: item.cta,
           topic: topicName,
         }
-        console.log({ body })
         result = await updateTopic(body)
       }
     }
@@ -146,7 +142,6 @@ const Create: React.FC = () => {
           answer: item.answer,
           topic: topicName,
         }
-        console.log({ body })
         result = await updateTopic(body)
       }
     }

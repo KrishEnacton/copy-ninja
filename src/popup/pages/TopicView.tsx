@@ -10,7 +10,7 @@ const TopicView: React.FC = () => {
   return (
     <MainLayout>
       <div className="mx-4 py-2 h-full relative">
-        <SectionHeader topic={''} />
+        <SectionHeader />
         <TopicSection />
         <SectionFooter isTopic={true} />
       </div>
