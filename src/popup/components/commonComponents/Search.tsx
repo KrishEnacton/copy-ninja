@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, useState } from 'react'
 import useSupabase from '../../../supabase/use-supabase'
 import { SpinnerLoader } from './SpinnerLoader'
 import Dropdown from './core/Dropdown'
@@ -8,6 +8,8 @@ import { Transition, Dialog } from '@headlessui/react'
 import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 import { useRecoilState } from 'recoil'
 import { searchInputState } from '../../recoil/atoms'
+import { selectedFolder } from '../../recoil/atoms'
+import KKDropdown from './core/KKDropdown'
 
 const Search = ({ className, from }: { className?: string; from?: string }) => {
   const { getAllFolders, createFolder } = useSupabase()
@@ -15,6 +17,7 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [folder, setFolder] = useState<string>('')
   const [searchInput, setSearchInput] = useRecoilState(searchInputState)
+  const [selected, setSelected] = useRecoilState(selectedFolder)
 
   const navigate = useNavigate()
   const createTopicURL = chrome.runtime.getURL('/options.html#/home')
@@ -54,6 +57,12 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
     <div className={`flex justify-between  flex-col ${className}`}>
       <div className="px-4 md:px-0 py-1">
         <div className="mt-2 flex rounded-md items-end">
+          <KKDropdown
+            id="folder"
+            selected={selected}
+            setSelected={setSelected}
+            listData={getLocalStorage('allFolders') || []}
+          />
           <Dropdown
             id={'folder'}
             selectOptions={getLocalStorage('allFolders')}
