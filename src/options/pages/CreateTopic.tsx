@@ -14,7 +14,7 @@ import InputGroup from '../components/InputGroup'
 const Create: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const [item, setItem] = useState<any>(null)
+  const [item, setItem] = useState<any>(location.state)
   const [loading, setLoading] = useState<{
     answerLoading?: boolean
     ctaLoading?: boolean
@@ -160,15 +160,13 @@ const Create: React.FC = () => {
         answerdeleteLoading: false,
         ctadeleLoading: false,
       })
-
     }
   }
 
   useLayoutEffect(() => {
     setItem(location.state)
-    console.log(location.state)
     setTopicName(location?.state?.topic)
-  }, [])
+  }, [location.state])
 
   return (
     <MainLayout
@@ -192,264 +190,204 @@ const Create: React.FC = () => {
       </div>
       <div className="mt-4">
         <div className="flex gap-x-3 justify-center items-center">
-          {item === null ? (
-            <form onSubmit={(e) => submitHandler(e)} className="mt-2 rounded-md shadow-sm">
-              <div className="flex">
-                <div className="relative flex flex-grow items-stretch focus-within:z-10">
-                  <input
-                    type="text"
-                    name="topicName"
-                    id="topicName"
-                    value={topicName}
-                    onFocus={() => setIsEmpty(false)}
-                    className="block w-full rounded-none rounded-l-md border-0 py-2 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    placeholder="Enter Topic"
-                    onChange={(e) => setTopicName(e.target.value)}
-                  />
-                </div>
-                <div className="outset-y-1 border-y border-gray-300 right-0 flex items-center">
-                  <label htmlFor="folders" className="sr-only">
-                    Folders
-                  </label>
-                  <select
-                    id="folders"
-                    name="folders"
-                    onChange={(e) => {
-                      setFolder(e.target.value)
-                    }}
-                    className="h-full border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm"
-                  >
-                    {[
-                      { name: 'Select Folder', value: 'Select Folder' },
-                      ...getLocalStorage('allFolders'),
-                    ].map((folder) => (
-                      <option value={folder?.id}>{folder?.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <button
-                  type="submit"
-                  className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                >
-                  {item !== null ? 'Edit Topic' : 'Create Topic'}
-                </button>
-              </div>
-              {isEmpty && <div className="text-xs text-red-500">Please fill topic field</div>}
-            </form>
-          ) : (
-            <div className="text-2xl font-bold">Topic: {item?.topic}</div>
-          )}
+          <div className="text-2xl font-bold">Topic: {item?.topic}</div>
         </div>
       </div>
-      {item !== null ? (
+      <div>
         <div>
-          <div>
-            <div className="flex gap-x-4 mt-6">
-              <div className="flex flex-col justify-center items-center">
-                <div className="flex gap-x-4">
-                  <div className="flex flex-col justify-center items-center mt-4  border border-gray-300 p-4 rounded-xl bg-slate-100">
-                    <div className="text-lg font-bold">Answers</div>
-                    <div className="w-[306px]">
-                      <div className="isolate -space-y-px rounded-md">
-                        <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ">
-                          <label
-                            htmlFor={'ans_label'}
-                            className="block text-base  font-medium text-gray-900"
-                          >
-                            Label
-                          </label>
-                          <input
-                            type="text"
-                            name={'Answer with Regex'}
-                            id={'ans_label'}
-                            value={answer?.label}
-                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500"
-                            placeholder={'Answer with Regex'}
-                            //@ts-ignore
-                            onChange={(e) => setAnswer({ ...answer, label: e.target.value })}
-                          />
-                        </div>
-                        <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5  ">
-                          <label
-                            htmlFor={'cta_label'}
-                            className="block text-base  font-medium text-gray-900"
-                          >
-                            Topic Answer
-                          </label>
-                          <input
-                            type="text"
-                            value={answer?.value}
-                            name={'Label for CTA'}
-                            id={'cta_label'}
-                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500"
-                            placeholder={'Link with Regex Context'}
-                            //@ts-ignore
-                            onChange={(e) => setAnswer({ ...answer, value: e.target.value })}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex justify-center items-center mt-4">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (answersEdit.ans || answersEdit.cta) {
-                              editAnswersHandler()
-                            } else submitHandler()
-                            setAnswer({ label: '', value: '' })
-                          }}
-                          className="rounded-md bg-indigo-600 px-10 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          <div className="flex gap-x-4 mt-6">
+            <div className="flex flex-col justify-center items-center">
+              <div className="flex gap-x-4">
+                <div className="flex flex-col justify-center items-center mt-4  border border-gray-300 p-4 rounded-xl bg-slate-100">
+                  <div className="text-lg font-bold">Answers</div>
+                  <div className="w-[306px]">
+                    <div className="isolate -space-y-px rounded-md">
+                      <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ">
+                        <label
+                          htmlFor={'ans_label'}
+                          className="block text-base  font-medium text-gray-900"
                         >
-                          {loading.answerLoading ? <SpinnerLoader className="h-5 w-5" /> : answersEdit ? 'Edit' : ' Add'}
-                        </button>
+                          Label
+                        </label>
+                        <input
+                          type="text"
+                          name={'Answer with Regex'}
+                          id={'ans_label'}
+                          value={answer?.label}
+                          className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500"
+                          placeholder={'Answer with Regex'}
+                          //@ts-ignore
+                          onChange={(e) => setAnswer({ ...answer, label: e.target.value })}
+                        />
+                      </div>
+                      <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5  ">
+                        <label
+                          htmlFor={'topic_ans_label'}
+                          className="block text-base  font-medium text-gray-900"
+                        >
+                          Topic Answer
+                        </label>
+                        <input
+                          type="text"
+                          value={answer?.value}
+                          name={'Label for CTA'}
+                          id={'topic_ans_label'}
+                          className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500"
+                          placeholder={'Link with Regex Context'}
+                          //@ts-ignore
+                          onChange={(e) => setAnswer({ ...answer, value: e.target.value })}
+                        />
                       </div>
                     </div>
+                    <div className="flex justify-center items-center mt-4">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (answersEdit.ans || answersEdit.cta) {
+                            editAnswersHandler()
+                          } else submitHandler()
+                          setAnswer({ label: '', value: '' })
+                        }}
+                        className="rounded-md bg-indigo-600 px-10 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        {loading.answerLoading ? (
+                          <SpinnerLoader className="h-5 w-5" />
+                        ) : answersEdit.ans ? (
+                          'Edit'
+                        ) : (
+                          ' Add'
+                        )}
+                      </button>
+                    </div>
                   </div>
-                  {/* <InputGroup
-                    inputAnswerHandler={(e) => setAnswer({ ...answer, value: e.target.value })}
-                    inputLabelHandler={(e) => setAnswer({ ...answer, label: e.target.value })}
-                    inputSubmitHandler={() => {
-                      if (answersEdit.ans || answersEdit.cta) {
-                        editAnswersHandler()
-                      } else if (answersDelete.ans || answersDelete.cta) {
-                        deleteHandler()
-                      } else submitHandler()
-                      setAnswer({ label: '', value: '' })
-                    }}
-                    loading={loading}
-                    input={answer}
-                    inputValue={"Topic"}
-                  /> */}
+                </div>
 
-                  <div className="flex flex-col justify-center items-center mt-4  border border-gray-300 p-4 rounded-xl bg-slate-100">
-                    <div className="text-lg font-bold">CTA</div>
-                    <div className="w-[306px]">
-                      <div className="isolate -space-y-px rounded-md">
-                        <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5  ">
-                          <label
-                            htmlFor={'ans_label'}
-                            className="block text-base  font-medium text-gray-900"
-                          >
-                            Label
-                          </label>
-                          <input
-                            type="text"
-                            name={'Answer with Regex'}
-                            value={cta?.label}
-                            id={'ans_label'}
-                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500 "
-                            placeholder={'Answer with Regex'}
-                            //@ts-ignore
-                            onChange={(e) => setCTA({ ...cta, label: e.target.value })}
-                          />
-                        </div>
-                        <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ">
-                          <label
-                            htmlFor={'cta_label'}
-                            className="block text-base  font-medium text-gray-900"
-                          >
-                            CTA Answer
-                          </label>
-                          <input
-                            type="text"
-                            name={'Label for CTA'}
-                            value={cta?.value}
-                            id={'cta_label'}
-                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400  sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500 
-                            "
-                            placeholder={'Link with Regex Context'}
-                            //@ts-ignore
-                            onChange={(e) => setCTA({ ...cta, value: e.target.value })}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex justify-center items-center mt-4">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            submitHandler()
-                            setCTA({ label: '', value: '' })
-                          }}
-                          className="rounded-md bg-indigo-600 px-10 p-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                <div className="flex flex-col justify-center items-center mt-4  border border-gray-300 p-4 rounded-xl bg-slate-100">
+                  <div className="text-lg font-bold">CTA</div>
+                  <div className="w-[306px]">
+                    <div className="isolate -space-y-px rounded-md">
+                      <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5  ">
+                        <label
+                          htmlFor={'cta_label'}
+                          className="block text-base  font-medium text-gray-900"
                         >
-                          {loading.ctaLoading ? <SpinnerLoader className="h-5 w-5" /> : ' Add'}
-                        </button>
+                          Label
+                        </label>
+                        <input
+                          type="text"
+                          name={'Answer with Regex'}
+                          value={cta?.label}
+                          id={'cta_label'}
+                          className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500 "
+                          placeholder={'Answer with Regex'}
+                          //@ts-ignore
+                          onChange={(e) => setCTA({ ...cta, label: e.target.value })}
+                        />
                       </div>
+                      <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ">
+                        <label
+                          htmlFor={'cta_ans_label'}
+                          className="block text-base  font-medium text-gray-900"
+                        >
+                          CTA Answer
+                        </label>
+                        <input
+                          type="text"
+                          name={'Label for CTA'}
+                          value={cta?.value}
+                          id={'cta_ans_label'}
+                          className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400  sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500 
+                            "
+                          placeholder={'Link with Regex Context'}
+                          //@ts-ignore
+                          onChange={(e) => setCTA({ ...cta, value: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-center items-center mt-4">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          submitHandler()
+                          setCTA({ label: '', value: '' })
+                        }}
+                        className="rounded-md bg-indigo-600 px-10 p-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        {loading.ctaLoading ? <SpinnerLoader className="h-5 w-5" /> : ' Add'}
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="flex gap-x-4 w-full">
-            <div className="w-full">
-              <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
-                {item?.answer?.filter(Boolean).length > 0 ? (
-                  item?.answer
-                    ?.filter((i) => {
-                      if (i.label !== '' && i.value !== '') {
-                        return true
-                      }
-                      return false
-                    })
-                    .map((ans, index: number) => (
-                      <DisclosureComponent
-                        editHandler={() => {
-                          setAnswer({ label: ans.label, value: ans.value, id: ans.id })
-                          setIsAnswersEdit({ ans: true })
-                        }}
-                        deleteHandler={() => {
-                          setIsAnswersDelete({ ans: true })
-                          deleteHandler()
-                        }}
-                        ans={ans}
-                        index={index}
-                        loading={loading}
-                        setloading={setLoading}
-                      />
-                    ))
-                ) : (
-                  <div className="text-lg font-semibold text-center">No answers yet</div>
-                )}
-              </div>
+        <div className="flex gap-x-4 w-full">
+          <div className="w-full">
+            <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
+              {item?.answer?.filter(Boolean).length > 0 ? (
+                item?.answer
+                  ?.filter((i) => {
+                    if (i.label !== '' && i.value !== '') {
+                      return true
+                    }
+                    return false
+                  })
+                  .map((ans, index: number) => (
+                    <DisclosureComponent
+                      editHandler={() => {
+                        setAnswer({ label: ans.label, value: ans.value, id: ans.id })
+                        setIsAnswersEdit({ ans: true })
+                      }}
+                      deleteHandler={() => {
+                        setIsAnswersDelete({ ans: true })
+                        deleteHandler()
+                      }}
+                      ans={ans}
+                      index={index}
+                      loading={loading}
+                      setloading={setLoading}
+                    />
+                  ))
+              ) : (
+                <div className="text-lg font-semibold text-center">No answers yet</div>
+              )}
             </div>
-            <div className="w-full">
-              <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
-                {item.cta.filter(Boolean).length > 0 ? (
-                  item?.cta
-                    ?.filter((i) => {
-                      if (i.label !== '' && i.value !== '') {
-                        return true
-                      }
-                      return false
-                    })
-                    .map((ans, index: number) => (
-                      <DisclosureComponent
-                        ans={ans}
-                        editHandler={() => {
-                          setCTA({ label: ans.label, value: ans.value, id: ans.id })
-                          setIsAnswersEdit({ cta: true })
-                        }}
-                        deleteHandler={() => {
-                          setIsAnswersDelete({ cta: true })
-                          deleteHandler()
-                        }}
-                        index={index}
-                        loading={loading}
-                        setloading={setLoading}
-
-                      />
-                    ))
-                ) : (
-                  <div className="text-lg font-semibold text-center">No answers yet</div>
-                )}
-              </div>
+          </div>
+          <div className="w-full">
+            <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
+              {item.cta.filter(Boolean).length > 0 ? (
+                item?.cta
+                  ?.filter((i) => {
+                    if (i.label !== '' && i.value !== '') {
+                      return true
+                    }
+                    return false
+                  })
+                  .map((ans, index: number) => (
+                    <DisclosureComponent
+                      ans={ans}
+                      editHandler={() => {
+                        setCTA({ label: ans.label, value: ans.value, id: ans.id })
+                        setIsAnswersEdit({ cta: true })
+                      }}
+                      deleteHandler={() => {
+                        setIsAnswersDelete({ cta: true })
+                        deleteHandler()
+                      }}
+                      index={index}
+                      loading={loading}
+                      setloading={setLoading}
+                    />
+                  ))
+              ) : (
+                <div className="text-lg font-semibold text-center">No answers yet</div>
+              )}
             </div>
           </div>
         </div>
-      ) : (
-        <div className="flex justify-center text-2xl font-bold my-16">Create a Topic First.</div>
-      )}
+      </div>
     </MainLayout>
   )
 }
