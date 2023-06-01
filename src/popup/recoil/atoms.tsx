@@ -7,11 +7,6 @@ export const topicType = atomFamily({
   default: (id) => '' as string,
 })
 
-export const selectedType = atom({
-  key: 'selectedType',
-  default: 'random' as string,
-})
-
 export const queryParams = atom({
   key: 'queryParams',
   default: { answer: '', cta: '', isCta: false } as QueryProps,
@@ -37,4 +32,28 @@ export const selectedFolder = atom({
 export const allFoldersAtom = atom({
   key: 'allFoldersAtom',
   default: [] as any,
+})
+export const selectedType = atom({
+  key: 'selectedType',
+  default: { key: 'random', name: 'Random' } as { key: string; name: string },
+})
+
+export const selectedAnswerState = atom({
+  key: 'selectedAnswerState',
+  default: {} as any
+})
+
+export const selectedCTAState = atom({
+  key: 'selectedCTAState',
+  default: {} as any
+})
+
+export const generatedAnswerState = atom({
+  key: 'generatedAnswer',
+  default: "" as string
+})
+
+export const generatedCTAState = atom({
+  key: 'generatedAnswer',
+  default: "" as string | undefined
 })

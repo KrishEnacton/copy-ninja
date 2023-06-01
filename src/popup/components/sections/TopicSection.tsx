@@ -1,6 +1,10 @@
+import { useRecoilState } from 'recoil'
+import { QueryProps } from '../../../utils/global'
+import { queryParams } from '../../recoil/atoms'
 import CustomInput from '../commonComponents/core/Input'
 
 const TopicSection = () => {
+  const [query, setQuery] = useRecoilState<QueryProps>(queryParams)
   return (
     <div className="px-2 py-8 text-lg text-black">
       <div className="flex gap-x-1">
@@ -13,6 +17,7 @@ const TopicSection = () => {
           type={'textarea'}
           name={'edit_ans'}
           id={'edit_ans'}
+          value={query.answer}
         />
       </div>
       <div className="flex gap-x-1 mt-2">
@@ -25,6 +30,7 @@ const TopicSection = () => {
           type={'text'}
           name={'edit_cta'}
           id={'edit_cta'}
+          value={query.cta}
         />
       </div>
     </div>

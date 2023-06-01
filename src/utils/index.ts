@@ -15,6 +15,6 @@ export function pickRandomVariable(text: string) {
 }
 
 // Generate a random sentence by replacing the variables
-export function generateRandomSentence(sentenceTemplate: string) {
-  return pickRandomVariable(sentenceTemplate)
+export function generateRandomSentence(sentenceTemplate?: string) {
+  if (sentenceTemplate) return pickRandomVariable(sentenceTemplate)
 }
