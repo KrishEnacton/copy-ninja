@@ -6,6 +6,7 @@ import { isEditState } from '../../../options/recoil/atoms'
 import { useNavigate } from 'react-router-dom'
 import PopupList from '../commonComponents/core/PopupList'
 import OptionList from '../commonComponents/core/OptionList'
+import { searchInputState, selectedFolderState } from '../../recoil/atoms'
 
 const ListView = ({ className, from }: { className?: string; from?: string }) => {
   const navigate = useNavigate()
@@ -57,6 +58,3 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
 }
 
 export default ListView
-
-
-// allTopics?.filter(item => item?.folder_id === selectedFolder?.id)

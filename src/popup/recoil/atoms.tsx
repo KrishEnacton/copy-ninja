@@ -29,5 +29,8 @@ export const searchInputState = atom({
 export const selectedFolder = atom({
   key: 'selectedFolder',
   default:
-    (getLocalStorage('defaultSelectedFolder') as any) || (getLocalStorage('allFolders')[0] as any),
+    (getLocalStorage('defaultSelectedFolder') as any) ||
+    (getLocalStorage('allFolders')?.[0] as any) ||
+    ({} as any),
+
 })

@@ -15,9 +15,16 @@ const Create: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [item, setItem] = useState<any>(null)
-  const [loading, setLoading] = useState<{ answerLoading?: boolean; ctaLoading?: boolean }>({
+  const [loading, setLoading] = useState<{
+    answerLoading?: boolean
+    ctaLoading?: boolean
+    answerdeleteLoading?: boolean
+    ctadeleLoading?: boolean
+  }>({
     answerLoading: false,
     ctaLoading: false,
+    answerdeleteLoading: false,
+    ctadeleLoading: false,
   })
   const [answer, setAnswer] = useState<{ label?: string; value?: string; id?: string }>()
   const [cta, setCTA] = useState<{ label: string; value: string; id?: string }>()
@@ -147,7 +154,12 @@ const Create: React.FC = () => {
     if (result?.data?.[0]?.id) {
       setItem(result.data?.[0])
       setIsAnswersEdit({ ans: false, cta: false })
-      setLoading({ answerLoading: false, ctaLoading: false })
+      setLoading({
+        answerLoading: false,
+        ctaLoading: false,
+        answerdeleteLoading: false,
+        ctadeleLoading: false,
+      })
     }
   }
 
@@ -281,14 +293,12 @@ const Create: React.FC = () => {
                           onClick={() => {
                             if (answersEdit.ans || answersEdit.cta) {
                               editAnswersHandler()
-                            } else if (answersDelete.ans || answersDelete.cta) {
-                              deleteHandler()
                             } else submitHandler()
                             setAnswer({ label: '', value: '' })
                           }}
                           className="rounded-md bg-indigo-600 px-10 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                          {loading.answerLoading ? <SpinnerLoader className="h-5 w-5" /> : ' Add'}
+                          {loading.answerLoading ? <SpinnerLoader className="h-5 w-5" /> : answersEdit ? 'Edit' : ' Add'}
                         </button>
                       </div>
                     </div>
@@ -373,12 +383,7 @@ const Create: React.FC = () => {
           <div className="flex gap-x-4 w-full">
             <div className="w-full">
               <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
-                {item?.answer?.filter((i) => {
-                  if (i.label !== '' && i.value !== '') {
-                    return true
-                  }
-                  return false
-                }).length > 0 ? (
+                {item?.answer?.filter(Boolean).length > 0 ? (
                   item?.answer
                     ?.filter((i) => {
                       if (i.label !== '' && i.value !== '') {
@@ -393,11 +398,13 @@ const Create: React.FC = () => {
                           setIsAnswersEdit({ ans: true })
                         }}
                         deleteHandler={() => {
-                          setAnswer({ label: ans.label, value: ans.value, id: ans.id })
                           setIsAnswersDelete({ ans: true })
+                          deleteHandler()
                         }}
                         ans={ans}
                         index={index}
+                        loading={loading}
+                        setloading={setLoading}
                       />
                     ))
                 ) : (
@@ -407,12 +414,7 @@ const Create: React.FC = () => {
             </div>
             <div className="w-full">
               <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
-                {item?.cta?.filter((i) => {
-                  if (i.label !== '' && i.value !== '') {
-                    return true
-                  }
-                  return false
-                }).length > 0 ? (
+                {item.cta.filter(Boolean).length > 0 ? (
                   item?.cta
                     ?.filter((i) => {
                       if (i.label !== '' && i.value !== '') {
@@ -428,10 +430,12 @@ const Create: React.FC = () => {
                           setIsAnswersEdit({ cta: true })
                         }}
                         deleteHandler={() => {
-                          setCTA({ label: ans.label, value: ans.value, id: ans.id })
                           setIsAnswersDelete({ cta: true })
+                          deleteHandler()
                         }}
                         index={index}
+                        loading={loading}
+                        setloading={setLoading}
                       />
                     ))
                 ) : (
