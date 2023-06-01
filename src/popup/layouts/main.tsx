@@ -4,16 +4,16 @@ import Header from '../components/commonComponents/Header'
 const MainLayout = ({
   children,
   className,
-  headerClassName,user
+  headerClassName
 }: {
   children: React.ReactNode
   className?: string
   headerClassName?: string
-  isOption?: boolean, user?: any
+  isOption?: boolean
 }) => {
   return (
     <div className={`h-full ${className}`}>
-      <Header user={user} className={headerClassName} />
+      <Header className={headerClassName} />
       {children}
     </div>
   )

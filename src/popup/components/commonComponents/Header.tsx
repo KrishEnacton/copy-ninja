@@ -1,25 +1,25 @@
-import { Fragment, useLayoutEffect, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import LogoutIcon from '@heroicons/react/24/outline/ArrowRightOnRectangleIcon'
+import { userState } from '../../../options/recoil/atoms'
+import { useRecoilState } from 'recoil'
+import { useNavigate } from 'react-router-dom'
 
-const Header = ({ className, user }: { className?: string, user?: string }) => {
+const Header = ({ className }: { className?: string }) => {
   const [isModal, setIsModal] = useState(false)
-  const [currentUser, setUser] = useState<any>(null)
+  const [user, setUser] = useRecoilState(userState)
+  const navigate = useNavigate()
   function logout() {
     localStorage.removeItem('user')
     setIsModal(false)
+    setUser(null)
   }
-
-  useLayoutEffect(() => {
-     setUser(user)
-  },[])
-
 
   return (
     <nav className={`bg-white border-gray-200 dark:bg-gray-900 relative ${className}`}>
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4 md:py-4 md:px-0">
         {/* ----TOP HEADER PADDING------ */}
-        <a href="#" className="flex items-center">
+        <button className="flex items-center" onClick={() => navigate("/home")}>
           <img
             src={chrome.runtime.getURL('/img/CopyNinja.png')}
             className="h-8 mr-3"
@@ -28,16 +28,18 @@ const Header = ({ className, user }: { className?: string, user?: string }) => {
           <span className="self-center text-[1rem] font-semibold whitespace-nowrap text-black">
             Copy Ninja
           </span>
-        </a>
-        {user !== null &&<div className="flex items-center md:order-2">
-          <a
-            href="#"
-            onClick={() => setIsModal(true)}
-            className="py-2 px-3 flex text-gray-800 dark:text-white bg-slate-100 hover:bg-slate-200 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm  md:px-5 md:py-2.5 mr-1 md:mr-0 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800 border border-gray-300"
-          >Logout
-            <LogoutIcon className="h-5 w-5 ml-1" stroke="black" />
-          </a>
-        </div>}
+        </button>
+        {user && Object.values(user).length > 0 && (
+          <div className="flex items-center md:order-2">
+            <button
+              onClick={() => setIsModal(true)}
+              className="py-2 px-3 flex text-gray-800 dark:text-white bg-slate-100 hover:bg-slate-200 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm  md:px-5 md:py-2.5 mr-1 md:mr-0 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800 border border-gray-300"
+            >
+              Logout
+              <LogoutIcon className="h-5 w-5 ml-1" stroke="black" />
+            </button>
+          </div>
+        )}
         <Transition.Root show={isModal} as={Fragment}>
           <Dialog as="div" className="relative z-10" onClose={() => setIsModal(false)}>
             <Transition.Child
@@ -70,7 +72,7 @@ const Header = ({ className, user }: { className?: string, user?: string }) => {
                           as="h3"
                           className="text-base font-semibold leading-6 text-gray-900"
                         >
-                          Sure you want to Logout?
+                          Sure you want to Log-out?
                         </Dialog.Title>
                       </div>
                     </div>

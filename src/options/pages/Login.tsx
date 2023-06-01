@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useRecoilState } from 'recoil'
 import { userState } from '../recoil/atoms'
 import Form from '../components/Form'
+import MainLayout from '../../popup/layouts/main'
 
 const OptionsLogin = () => {
   const [loading, setLoading] = useState(false)
@@ -41,7 +42,7 @@ const OptionsLogin = () => {
   }, [])
 
   return (
-    <Fragment>
+    <MainLayout isOption={true} headerClassName="w-full" className={'items-center w-[700px] mx-auto'}>
       <div className="mt-12 border border-gray-300 mx-auto w-full h-full bg-white rounded-lg shadow dark:border sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
@@ -50,7 +51,7 @@ const OptionsLogin = () => {
           <Form onSubmit={onSubmit} loading={loading} />
         </div>
       </div>
-    </Fragment>
+    </MainLayout>
   )
 }
 

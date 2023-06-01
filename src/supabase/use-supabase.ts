@@ -76,10 +76,10 @@ const useSupabase = () => {
 
   async function getAllFolders() {
     try {
-      const { data, error } = await supabase.from('tbl_folder').select('*')
+      const { data, error } = await supabase.from('tbl_folder').select('*').order('created_at', { ascending: false })
       setLocalStorage('allFolders', data)
       return { data, error }
-    } catch (error) {}
+    } catch (error) { }
   }
 
   async function createTopic(body: TopicParams) {

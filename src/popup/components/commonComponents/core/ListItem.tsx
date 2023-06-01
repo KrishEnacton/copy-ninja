@@ -1,9 +1,4 @@
-import {
-  Cog6ToothIcon,
-  PencilSquareIcon,
-  TrashIcon,
-  CheckCircleIcon,
-} from '@heroicons/react/24/outline'
+import { PencilSquareIcon, TrashIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { SpinnerLoader } from '../SpinnerLoader'
 import { useNavigate } from 'react-router-dom'
@@ -18,18 +13,21 @@ const ListItem = ({ className, from, item }: any) => {
 
   const [isEditTopic, setIsEditTopic] = useRecoilState(isEditState)
   const [isModal, setIsModal] = useState(false)
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<{ editLoading?: boolean, deleteLoading?: boolean }>({
+    editLoading: false,
+    deleteLoading: false,
+  })
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const [updatedInput, setUpdatedInput] = useState<string>('')
   const inputRef = useRef<HTMLInputElement>(null)
 
   function editTopicHandler(body: TopicParams) {
     setIsEdit(false)
-    setLoading(true)
+    setLoading({editLoading: true })
     if (updateTopic) {
       updateTopic({ ...body, topic: updatedInput }).then((res: any) => {
         if (res?.data?.length > 0) {
-          setLoading(false)
+          setLoading({editLoading: false, deleteLoading: false})
           setIsEditTopic((prev) => !prev)
         }
       })
@@ -37,10 +35,10 @@ const ListItem = ({ className, from, item }: any) => {
   }
 
   function deleteTopicHandler(id: number) {
-    setLoading(true)
+    setLoading({ deleteLoading: true})
     deleteTopic(id).then((res) => {
       setIsEditTopic((prev) => !prev)
-      setLoading(false)
+      setLoading({editLoading: false, deleteLoading: false})
       setIsModal(false)
     })
   }
@@ -99,7 +97,7 @@ const ListItem = ({ className, from, item }: any) => {
           >
             {isEdit ? (
               <CheckCircleIcon className="w-6 h-6" />
-            ) : loading ? (
+            ) : loading.editLoading ? (
               <SpinnerLoader className="w-6 h-6" />
             ) : (
               <PencilSquareIcon className="w-6 h-6" />
@@ -139,10 +137,11 @@ const ListItem = ({ className, from, item }: any) => {
                       <div className="mt-3 text-center sm:mt-5">
                         <Dialog.Title
                           as="h3"
-                          className="text-base font-semibold leading-6 text-gray-900 mb-4"
+                          className="text-base font-bold leading-6 text-red-900 mb-4"
                         >
                           Sure, you want to delete the Topic?
                         </Dialog.Title>
+                        <div className='text-xs text-red-500'>It will delete all the answers and ctas inside it.</div>
                       </div>
                     </div>
                     <div className="mt-5 sm:mt-6 flex gap-x-2">
@@ -151,7 +150,7 @@ const ListItem = ({ className, from, item }: any) => {
                         className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
                         onClick={() => deleteTopicHandler(item.id)}
                       >
-                        {loading ? <SpinnerLoader className="w-5 h-5" /> : 'Yes'}
+                        {loading.deleteLoading ? <SpinnerLoader className="w-5 h-5" /> : 'Yes'}
                       </button>
                       <button
                         type="button"

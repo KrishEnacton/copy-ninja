@@ -2,7 +2,6 @@ import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import useSupabase from '../../../supabase/use-supabase'
 import { SpinnerLoader } from './SpinnerLoader'
 import Dropdown from './core/Dropdown'
-import { PlusIcon } from '@heroicons/react/20/solid'
 import { getLocalStorage } from '../../../utils'
 import { useNavigate } from 'react-router-dom'
 import { Transition, Dialog } from '@headlessui/react'
@@ -13,8 +12,8 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
   const [isModal, setIsModal] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [folder, setFolder] = useState<string>('')
+  const [allFolders, setAllFolders] = useState<any>([''])
 
-  const [allFolders, setAllFolders] = useState<string[]>([''])
   const navigate = useNavigate()
   const createTopicURL = chrome.runtime.getURL('/options.html#/home')
 
@@ -24,16 +23,10 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
       if (res.data) {
         setLoading(false)
         setIsModal(false)
-
         getAllFolders()
       }
     })
   }
-
-  useEffect(() => {
-    getAllFolders().then((res) => {})
-    setAllFolders(getLocalStorage('allFolders') ?? [''])
-  }, [])
 
   function redirect() {
     chrome.tabs.query({}, (tabs) => {
@@ -59,15 +52,20 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
     <div className={`flex justify-between  flex-col ${className}`}>
       <div className="px-4 md:px-0 py-1">
         <div className="mt-2 flex rounded-md items-end">
-          <Dropdown className="" id={'folder'} selectOptions={allFolders.map((i: any) => i.name)} />
-          <button
-            type="button"
-            onClick={() => setIsModal(true)}
-            className="ml-4 items-center rounded-md  px-2 py-2 bg-indigo-600 md:w-1/5 w-2/4
+          <Dropdown
+            id={'folder'}
+            selectOptions={getLocalStorage('allFolders')?.map((i: any) => i.name)}
+          />
+          {from === 'option' && (
+            <button
+              type="button"
+              onClick={() => setIsModal(true)}
+              className="ml-4 items-center rounded-md  px-2 py-2 bg-indigo-600 md:w-1/5 w-2/4
              text-sm font-semibold text-white hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Create Folder
-          </button>
+            >
+              Create Folder
+            </button>
+          )}
         </div>
       </div>
 
@@ -87,10 +85,15 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
           <button
             type="button"
             onClick={() => redirect()}
-            className=" md:w-1/6 ml-4 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className=" md:w-1/6 ml-4 group rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             {from === 'popup' ? (
-              <Cog6ToothIcon className="w-5 h-5" />
+              <div className="relative">
+                <Cog6ToothIcon className="w-5 h-5 group-hover" />
+                <div className="bg-gray-200 text-gray-800 text-sm rounded -translate-x-8 -translate-y-20 p-2 absolute hidden group-hover:block">
+                  Options Page
+                </div>
+              </div>
             ) : from === 'option' ? (
               'New Topic'
             ) : (

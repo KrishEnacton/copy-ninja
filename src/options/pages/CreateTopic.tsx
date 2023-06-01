@@ -1,23 +1,25 @@
-import { ArrowLeftIcon, ChevronUpIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
-import React, { Fragment, useEffect, useLayoutEffect, useState } from 'react'
-import InputGroup from '../components/InputGroup'
+import { ArrowLeftIcon } from '@heroicons/react/24/outline'
+import React, { Fragment, useLayoutEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Disclosure } from '@headlessui/react'
 import { withAuth } from '../components/HOC/withAuth'
 import useSupabase from '../../supabase/use-supabase'
 import { getLocalStorage } from '../../utils'
 import { TopicParams } from '../../utils/global'
 import { SpinnerLoader } from '../../popup/components/commonComponents/SpinnerLoader'
-import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import DisclosureComponent from '../components/Disclosure'
+import MainLayout from '../../popup/layouts/main'
 
 const Create: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [item, setItem] = useState<any>(null)
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<{ answerLoading?: boolean; ctaLoading?: boolean }>({
+    answerLoading: false,
+    ctaLoading: false,
+  })
   const [answer, setAnswer] = useState<{ label: any; value: any }>()
   const [topicName, setTopicName] = useState('')
+  const [isEmpty, setIsEmpty] = useState<boolean>(false)
   const [folder, setFolder] = useState<any>(null)
   const [cta, setCTA] = useState<{ label: any; value: any }>()
 
@@ -25,27 +27,36 @@ const Create: React.FC = () => {
 
   async function submitHandler(e?: React.FormEvent<HTMLFormElement>) {
     e && e.preventDefault()
-    setLoading(true)
+    answer
+      ? setLoading({ answerLoading: true })
+      : cta
+      ? setLoading({ ctaLoading: true })
+      : setLoading({ answerLoading: false, ctaLoading: false })
     let result: any
     let body: TopicParams
-    if (item !== null) {
-      if (cta) {
-        body = { ...item, answer: [...item.answer], cta: [...item.cta, cta], topic: topicName }
-        result = await updateTopic(body)
+
+    if (topicName) {
+      if (item !== null) {
+        if (cta) {
+          body = { ...item, answer: [...item.answer], cta: [...item.cta, cta], topic: topicName }
+          result = await updateTopic(body)
+        }
+        if (answer) {
+          body = { ...item, answer: [...item.answer, answer], cta: [...item.cta], topic: topicName }
+          result = await updateTopic(body)
+        }
+      } else {
+        result = await createTopic({
+          folderId: folder,
+          topic: topicName,
+        })
       }
-      if (answer) {
-        body = { ...item, answer: [...item.answer, answer], cta: [...item.cta], topic: topicName }
-        result = await updateTopic(body)
+      if (result?.data?.[0]?.id) {
+        setItem(result.data?.[0])
+        setLoading({ answerLoading: false, ctaLoading: false })
       }
     } else {
-      result = await createTopic({
-        folderId: folder,
-        topic: topicName,
-      })
-    }
-    if (result?.data?.[0]?.id) {
-      setItem(result.data?.[0])
-      setLoading(false)
+      setIsEmpty(true)
     }
   }
 
@@ -55,7 +66,7 @@ const Create: React.FC = () => {
   }, [])
 
   return (
-    <Fragment>
+    <MainLayout isOption={true} headerClassName="w-full" className={'items-center w-[700px] mx-auto'}>
       <div className="text-xl font-bold flex gap-x-4">
         <span
           className="isolate inline-flex rounded-md shadow-sm"
@@ -73,44 +84,48 @@ const Create: React.FC = () => {
       <div className="mt-4">
         <div className="flex gap-x-3 justify-center items-center">
           {item === null ? (
-            <form onSubmit={(e) => submitHandler(e)} className="mt-2 flex rounded-md shadow-sm">
-              <div className="relative flex flex-grow items-stretch focus-within:z-10">
-                <input
-                  type="text"
-                  name="topicName"
-                  id="topicName"
-                  value={topicName}
-                  className="block w-full rounded-none rounded-l-md border-0 py-2 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  placeholder="Enter Topic"
-                  onChange={(e) => setTopicName(e.target.value)}
-                />
-              </div>
-              <div className="outset-y-1 border-y border-gray-300 right-0 flex items-center">
-                <label htmlFor="folders" className="sr-only">
-                  Folders
-                </label>
-                <select
-                  id="folders"
-                  name="folders"
-                  onChange={(e) => {
-                    setFolder(e.target.value)
-                  }}
-                  className="h-full border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm"
+            <form onSubmit={(e) => submitHandler(e)} className="mt-2 rounded-md shadow-sm">
+              <div className="flex">
+                <div className="relative flex flex-grow items-stretch focus-within:z-10">
+                  <input
+                    type="text"
+                    name="topicName"
+                    id="topicName"
+                    value={topicName}
+                    onFocus={() => setIsEmpty(false)}
+                    className="block w-full rounded-none rounded-l-md border-0 py-2 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder="Enter Topic"
+                    onChange={(e) => setTopicName(e.target.value)}
+                  />
+                </div>
+                <div className="outset-y-1 border-y border-gray-300 right-0 flex items-center">
+                  <label htmlFor="folders" className="sr-only">
+                    Folders
+                  </label>
+                  <select
+                    id="folders"
+                    name="folders"
+                    onChange={(e) => {
+                      setFolder(e.target.value)
+                    }}
+                    className="h-full border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm"
+                  >
+                    {[
+                      { name: 'Select Folder', value: 'Select Folder' },
+                      ...getLocalStorage('allFolders'),
+                    ].map((folder) => (
+                      <option value={folder?.id}>{folder?.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                 >
-                  {[
-                    { name: 'Select Folder', value: 'Select Folder' },
-                    ...getLocalStorage('allFolders'),
-                  ].map((folder) => (
-                    <option value={folder?.id}>{folder?.name}</option>
-                  ))}
-                </select>
+                  {item !== null ? 'Edit Topic' : 'Create Topic'}
+                </button>
               </div>
-              <button
-                type="submit"
-                className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-              >
-                {item !== null ? 'Edit Topic' : 'Create Topic'}
-              </button>
+              {isEmpty && <div className="text-xs text-red-500">Please fill topic field</div>}
             </form>
           ) : (
             <div className="text-2xl font-bold">Topic: {item?.topic}</div>
@@ -173,7 +188,7 @@ const Create: React.FC = () => {
                           }}
                           className="rounded-md bg-indigo-600 px-10 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                          {loading ? <SpinnerLoader className="h-5 w-5" /> : ' Add'}
+                          {loading.answerLoading ? <SpinnerLoader className="h-5 w-5" /> : ' Add'}
                         </button>
                       </div>
                     </div>
@@ -213,7 +228,8 @@ const Create: React.FC = () => {
                             value={cta?.value}
                             id={'cta_label'}
                             className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400  sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500 
-                            "placeholder={'Link with Regex Context'}
+                            "
+                            placeholder={'Link with Regex Context'}
                             //@ts-ignore
                             onChange={(e) => setCTA({ ...cta, value: e.target.value })}
                           />
@@ -228,7 +244,7 @@ const Create: React.FC = () => {
                           }}
                           className="rounded-md bg-indigo-600 px-10 p-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                          {loading ? <SpinnerLoader className="h-5 w-5" /> : ' Add'}
+                          {loading.ctaLoading ? <SpinnerLoader className="h-5 w-5" /> : ' Add'}
                         </button>
                       </div>
                     </div>
@@ -238,7 +254,6 @@ const Create: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-8    text-xl font-bold">{item?.topic}</div>
           <div className="flex gap-x-4 w-full">
             <div className="w-full">
               <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
@@ -287,7 +302,7 @@ const Create: React.FC = () => {
       ) : (
         <div className="flex justify-center text-2xl font-bold my-16">Create a Topic First.</div>
       )}
-    </Fragment>
+    </MainLayout>
   )
 }
 

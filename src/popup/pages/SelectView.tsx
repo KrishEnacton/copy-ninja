@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React from 'react'
 import SectionLayout from '../layouts/section-layout'
 import Dropdown from '../components/commonComponents/core/Dropdown'
 import { config } from '../../utils/config'
@@ -7,12 +7,13 @@ import CustomSection from '../components/sections/CustomSection'
 import { selectedType } from '../recoil/atoms'
 import { useRecoilState } from 'recoil'
 import { withAuth } from '../../options/components/HOC/withAuth'
+import MainLayout from '../layouts/main'
 
 const SelectView: React.FC = () => {
   const [selectedTopic, setSelectedTopic] = useRecoilState(selectedType)
 
   return (
-    <Fragment>
+    <MainLayout>
       <SectionLayout>
         <Dropdown id={'topicType'} selectOptions={config.topicTypeOptions} />
         {selectedTopic === 'random' ? (
@@ -23,7 +24,7 @@ const SelectView: React.FC = () => {
           <div className='text-xl text-black font-semibold text-center justify-center my-10'>You haven't selected yet.</div>
         )}
       </SectionLayout>
-    </Fragment>
+    </MainLayout>
   )
 }
 
