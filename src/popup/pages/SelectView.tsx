@@ -28,7 +28,7 @@ const SelectView: React.FC = () => {
         {selectedTopic.key === 'random' ? (
           <RandomSection />
         ) : selectedTopic.key === 'custom' ? (
-          <CustomSection />
+          <CustomSection state={undefined} />
         ) : (
           <div className="text-xl text-black font-semibold text-center justify-center my-10">
             You haven't selected yet.

@@ -13,18 +13,10 @@ import { useLocation } from 'react-router-dom'
 import KKDropdown from '../commonComponents/core/KKDropdown'
 import { useEffect, useState } from 'react'
 
-const CustomSection = () => {
+const CustomSection = ({ state }) => {
   const [query, setQuery] = useRecoilState<QueryProps>(queryParams)
-  const location = useLocation()
-  const [selectedAnswer, setSelectedAnswer] = useRecoilState(selectedAnswerState)
-  const [selectedCTA, setSelectedCTA] = useRecoilState(selectedCTAState)
-  const [label, setLabel] = useState(null)
-
-  useEffect(() => {
-    setQuery({ ...query, answer: selectedAnswer, cta: selectedCTA })
-  }, [selectedAnswer, selectedCTA])
-
-  console.log({location})
+  const [selectedAnswer, setSelectedAnswer] = useState(state.answer[0])
+  const [selectedCTA, setSelectedCTA] = useState(state.cta[0])
 
   return (
     <div className="px-2 py-4 text-lg text-black">
@@ -44,19 +36,21 @@ const CustomSection = () => {
       <div className="flex flex-col my-4">
         <div className="text-base font-medium">Select Answer:</div>
         <KKDropdown
-          id="select_ans"
-          selected={selectedAnswer}
+          id={'select-answer'}
           setSelected={setSelectedAnswer}
-          listData={location.state.answer}
+          selected={selectedAnswer}
+          listData={state?.answer || []}
+          labelKey={'label'}
         />
       </div>
       <div className="flex flex-col">
         <div className="text-base font-medium ">Select CTA:</div>
         <KKDropdown
-          id="select_ans"
-          selected={selectedCTA}
+          id={'select-cta'}
           setSelected={setSelectedCTA}
-          listData={location.state.cta}
+          selected={selectedCTA}
+          listData={state?.cta || []}
+          labelKey={'label'}
         />
       </div>
     </div>

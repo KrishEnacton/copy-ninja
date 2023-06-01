@@ -1,10 +1,16 @@
 import { atom, atomFamily } from 'recoil'
 import { QueryProps } from '../../utils/global'
 import { getLocalStorage } from '../../utils'
+import { config } from '../../utils/config'
 
 export const topicType = atomFamily({
   key: 'topicType',
   default: (id) => '' as string,
+})
+
+export const selectedType = atom({
+  key: 'selectedType',
+  default: config._topicTypeOptions[0] as any,
 })
 
 export const queryParams = atom({
@@ -32,10 +38,6 @@ export const selectedFolder = atom({
 export const allFoldersAtom = atom({
   key: 'allFoldersAtom',
   default: [] as any,
-})
-export const selectedType = atom({
-  key: 'selectedType',
-  default: { key: 'random', name: 'Random' } as { key: string; name: string },
 })
 
 export const selectedAnswerState = atom({

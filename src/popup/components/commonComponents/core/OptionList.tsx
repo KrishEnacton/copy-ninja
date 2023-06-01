@@ -68,9 +68,9 @@ const OptionList = ({ className, item, onItemClick }: any) => {
             ref={inputRef}
             type="text"
             readOnly={!isEdit}
-            className="border-transparent focus:border-transparent focus:ring-0"
+            className="border-transparent focus:border-transparent focus:ring-0 "
             value={updatedInput}
-            onBlur={() => setIsEdit(false)}
+            // onBlur={() => setIsEdit(false)}
             onChange={(e) => setUpdatedInput(e.target.value)}
           />
           <button type="submit" className="hidden"></button>
