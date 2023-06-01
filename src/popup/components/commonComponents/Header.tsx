@@ -72,7 +72,7 @@ const Header = ({ className }: { className?: string }) => {
                           as="h3"
                           className="text-base font-semibold leading-6 text-gray-900"
                         >
-                          Sure you want to Log-out?
+                          Sure you want to log out?
                         </Dialog.Title>
                       </div>
                     </div>

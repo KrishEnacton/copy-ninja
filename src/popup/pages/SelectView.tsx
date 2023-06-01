@@ -14,6 +14,7 @@ const SelectView: React.FC = () => {
   const [selectedTopic, setSelectedTopic] = useRecoilState(selectedType)
   const location = useLocation()
 
+
   return (
     <MainLayout>
       <SectionLayout topic={location.state.topic}>

@@ -3,10 +3,11 @@ import CustomInput from '../commonComponents/core/Input'
 import { QueryProps } from '../../../utils/global'
 import { queryParams } from '../../recoil/atoms'
 import { useRecoilState } from 'recoil'
-import { useLayoutEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
 const CustomSection = () => {
   const [query, setQuery] = useRecoilState<QueryProps>(queryParams)
+  const location = useLocation()
 
   return (
     <div className="px-2 py-4 text-lg text-black">
@@ -27,7 +28,7 @@ const CustomSection = () => {
         <div className='text-base font-medium'>Select Answer:</div>
         <Dropdown
           id={'select_ans'}
-          selectOptions={['React Development', 'Backend Development']}
+          selectOptions={location?.state?.answser.map(ans => ans.label)}
           setOptions={(value: string) => setQuery((prevState) => ({ ...prevState, answer: value }))}
         />
       </div>
@@ -35,7 +36,7 @@ const CustomSection = () => {
         <div className='text-base font-medium '>Select CTA:</div>
         <Dropdown
           id={'select_cta'}
-          selectOptions={['cta 1', 'cta 2']}
+          selectOptions={location?.state?.cta.map(ans => ans.label)}
           setOptions={(value: string) => setQuery((prevState) => ({ ...prevState, cta: value }))}
         />
       </div>

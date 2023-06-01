@@ -11,13 +11,15 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
   const navigate = useNavigate()
   const [allTopics, setAllTopics] = useState<any>(null)
   const [isEditTopic, setIsEditTopic] = useRecoilState(isEditState)
+  const [selectedFolder, setSelectedFolder] = useRecoilState(selectedFolderState)
+  const [searchInput, setSearchInput] = useRecoilState(searchInputState)
   const { getAllTopics } = useSupabase()
   useEffect(() => {
     getAllTopics().then((res) => {
       setAllTopics(res?.data)
     })
   }, [isEditTopic])
-
+  
   useLayoutEffect(() => {
     setAllTopics(getLocalStorage('allTopics'))
   }, [])
@@ -26,7 +28,7 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
     <div
       className={`mt-4 border border-gray-300 p-2 md:p-4 rounded-md divide-y-2 overflow-y-auto divide-gray-200 mx-4 md:mx-0 ${className}`}
     >
-      {allTopics?.map((list, index) => (
+      {allTopics?.filter(item => item?.folder_id === selectedFolder?.id).filter(item => item.topic.includes(searchInput))?.map((list, index) => (
         <div key={index}>
           {from === 'popup' ? (
             <PopupList
@@ -55,3 +57,6 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
 }
 
 export default ListView
+
+
+// allTopics?.filter(item => item?.folder_id === selectedFolder?.id)

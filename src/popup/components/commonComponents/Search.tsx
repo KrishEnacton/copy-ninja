@@ -6,13 +6,15 @@ import { getLocalStorage } from '../../../utils'
 import { useNavigate } from 'react-router-dom'
 import { Transition, Dialog } from '@headlessui/react'
 import { Cog6ToothIcon } from '@heroicons/react/24/outline'
+import { useRecoilState } from 'recoil'
+import { searchInputState } from '../../recoil/atoms'
 
 const Search = ({ className, from }: { className?: string; from?: string }) => {
   const { getAllFolders, createFolder } = useSupabase()
   const [isModal, setIsModal] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [folder, setFolder] = useState<string>('')
-  const [allFolders, setAllFolders] = useState<any>([''])
+  const [searchInput, setSearchInput] = useRecoilState(searchInputState)
 
   const navigate = useNavigate()
   const createTopicURL = chrome.runtime.getURL('/options.html#/home')
@@ -54,7 +56,7 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
         <div className="mt-2 flex rounded-md items-end">
           <Dropdown
             id={'folder'}
-            selectOptions={getLocalStorage('allFolders')?.map((i: any) => i.name)}
+            selectOptions={getLocalStorage('allFolders')}
           />
           {from === 'option' && (
             <button
@@ -76,6 +78,7 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
               type="text"
               name="topics"
               id="topics"
+              onChange={(e) => setSearchInput(e.target.value)}
               className={`block w-full ${
                 from === 'popup' ? 'rounded-md' : 'rounded-md'
               } border-0 py-1.5 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}

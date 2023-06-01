@@ -35,14 +35,17 @@ const Create: React.FC = () => {
     let result: any
     let body: TopicParams
 
+    console.log({ item })
+
     if (topicName) {
       if (item !== null) {
         if (cta) {
-          body = { ...item, answer: [...item.answer], cta: [...item.cta, cta], topic: topicName }
+          body = { ...item, answer: item.answer, cta: [...item?.cta, cta], topic: topicName }
           result = await updateTopic(body)
         }
         if (answer) {
-          body = { ...item, answer: [...item.answer, answer], cta: [...item.cta], topic: topicName }
+          body = { ...item, answer: [...item?.answer, answer], cta: item.cta, topic: topicName }
+          console.log({answer, body})
           result = await updateTopic(body)
         }
       } else {
@@ -62,11 +65,16 @@ const Create: React.FC = () => {
 
   useLayoutEffect(() => {
     setItem(location.state)
+    console.log(location.state)
     setTopicName(location?.state?.topic)
   }, [])
 
   return (
-    <MainLayout isOption={true} headerClassName="w-full" className={'items-center w-[700px] mx-auto'}>
+    <MainLayout
+      isOption={true}
+      headerClassName="w-full"
+      className={'items-center w-[700px] mx-auto'}
+    >
       <div className="text-xl font-bold flex gap-x-4">
         <span
           className="isolate inline-flex rounded-md shadow-sm"

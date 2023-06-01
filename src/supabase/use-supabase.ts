@@ -89,7 +89,7 @@ const useSupabase = () => {
       const { data, error } = await supabase
         .from('tbl_topic')
         .insert([
-          { folder_id: folderId, topic: topic ?? '', answer: answer ?? [''], cta: cta ?? [''] },
+          { folder_id: folderId, topic: topic ?? '', answer: answer ?? [], cta: cta ?? []},
         ]).select()
       return { data, error }
     } catch (error) {

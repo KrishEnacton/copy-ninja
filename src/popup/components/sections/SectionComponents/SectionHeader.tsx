@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, HomeIcon } from '@heroicons/react/20/solid'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const SectionHeader: React.FC<{ topic: string }> = ({ topic = '' }) => {
   const navigate = useNavigate()

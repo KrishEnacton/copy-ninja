@@ -17,7 +17,12 @@ export const queryParams = atom({
     default: { answer: '', cta: '', isCta: false } as QueryProps
 })
 
-export const selectedFolder = atom({
-    key: 'selectedFolder',
+export const selectedFolderState = atom({
+    key: 'selectedFolderState',
     default: null as any
+})
+
+export const searchInputState = atom({
+    key: 'searchInputState',
+    default: ""  as string
 })

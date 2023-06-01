@@ -9,7 +9,7 @@ import MainLayout from '../layouts/main'
 const Login = () => {
   const [loading, setLoading] = useState(false)
   const [user, setUser] = useRecoilState(userState)
-  const { login } = useSupabase()
+  const { login, getAllFolders } = useSupabase()
   const navigate = useNavigate()
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -26,6 +26,7 @@ const Login = () => {
       })
       if (data?.user?.id) {
         setUser(data.user)
+        getAllFolders()
         setLoading(false)
         navigate('/home')
       }

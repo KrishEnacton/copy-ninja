@@ -58,7 +58,7 @@ const ListItem = ({ className, from, item, modalcHold }: any) => {
       className={`${className} group flex justify-between py-2 text-indigo-500 font-medium`}
       onClick={() => {
         if (from === 'popup') {
-          navigate('/select')
+          navigate('/select', { state: item })
         }
       }}
     >
