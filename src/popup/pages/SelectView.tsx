@@ -9,20 +9,25 @@ import { useRecoilState } from 'recoil'
 import { withAuth } from '../../options/components/HOC/withAuth'
 import MainLayout from '../layouts/main'
 import { useLocation } from 'react-router-dom'
+import KKDropdown from '../components/commonComponents/core/KKDropdown'
 
 const SelectView: React.FC = () => {
   const [selectedTopic, setSelectedTopic] = useRecoilState(selectedType)
   const location = useLocation()
 
-
   return (
     <MainLayout>
       <SectionLayout topic={location.state.topic}>
-        <Dropdown id={'topicType'} selectOptions={config.topicTypeOptions} />
-        {selectedTopic === 'random' ? (
+        <KKDropdown
+          id={''}
+          setSelected={setSelectedTopic}
+          selected={selectedTopic}
+          listData={config._topicTypeOptions}
+        />
+        {selectedTopic.name === 'random' ? (
           <RandomSection />
-        ) : selectedTopic === 'custom' ? (
-          <CustomSection />
+        ) : selectedTopic.name === 'custom' ? (
+          <CustomSection state={location.state} />
         ) : (
           <div className="text-xl text-black font-semibold text-center justify-center my-10">
             You haven't selected yet.
