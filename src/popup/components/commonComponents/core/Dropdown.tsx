@@ -25,10 +25,6 @@ const Dropdown = ({
     if (typeof setOptions === 'function') setOptions({ value })
   }
 
-  useEffect(() => {
-    setSelected(selectOptions[0])
-  }, [])
-
 
   return (
     <div className={`${className} flex justify-center relative w-full`}>

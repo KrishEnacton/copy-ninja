@@ -6,9 +6,9 @@ import TopicView from './pages/TopicView'
 
 function App() {
   return (
-    <MemoryRouter initialIndex={0} initialEntries={['/login', '/home', '/select', '/topic']}>
+    <MemoryRouter initialIndex={0} initialEntries={['/', '/home', '/select', '/topic']}>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/select" element={<SelectView />} />
         <Route path="/topic" element={<TopicView />} />

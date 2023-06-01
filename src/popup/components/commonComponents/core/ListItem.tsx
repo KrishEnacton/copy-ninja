@@ -104,9 +104,9 @@ const ListItem = ({ className, from, item }: any) => {
             )}
           </div>
         )}
-        <div className="group-hover:cursor-pointer" onClick={() => setIsModal(true)}>
+        {from === 'option' && <div className="group-hover:cursor-pointer" onClick={() => setIsModal(true)}>
           <TrashIcon className="w-6 h-6 text-black" />
-        </div>
+        </div>}
         <Transition.Root show={isModal} as={Fragment}>
           <Dialog as="div" className="relative z-10" onClose={() => setIsModal(false)}>
             <Transition.Child
