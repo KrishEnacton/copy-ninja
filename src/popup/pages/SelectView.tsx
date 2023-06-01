@@ -1,6 +1,5 @@
 import React from 'react'
 import SectionLayout from '../layouts/section-layout'
-import Dropdown from '../components/commonComponents/core/Dropdown'
 import { config } from '../../utils/config'
 import RandomSection from '../components/sections/RandomSection'
 import CustomSection from '../components/sections/CustomSection'
