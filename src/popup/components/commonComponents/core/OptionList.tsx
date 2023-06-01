@@ -1,16 +1,15 @@
 import { PencilSquareIcon, TrashIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
-import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { SpinnerLoader } from '../SpinnerLoader'
-import { useNavigate } from 'react-router-dom'
 import useSupabase from '../../../../supabase/use-supabase'
 import { TopicParams } from '../../../../utils/global'
 import { useRecoilState } from 'recoil'
 import { isEditState } from '../../../../options/recoil/atoms'
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog } from '@headlessui/react'
+import Modal from './Modal'
 
-const ListItem = ({ className, from, item, modalcHold }: any) => {
-  const navigate = useNavigate()
-  const { updateTopic, deleteTopic, getAllTopics } = useSupabase()
+const OptionList = ({ className, item, onItemClick }: any) => {
+  const { updateTopic, deleteTopic } = useSupabase()
   const modalRef = useRef<any>()
 
   const [isEditTopic, setIsEditTopic] = useRecoilState(isEditState)
@@ -53,15 +52,9 @@ const ListItem = ({ className, from, item, modalcHold }: any) => {
       inputRef.current.focus()
     }
   }, [isEdit])
+
   return (
-    <div
-      className={`${className} group flex justify-between py-2 text-indigo-500 font-medium`}
-      onClick={() => {
-        if (from === 'popup') {
-          navigate('/select')
-        }
-      }}
-    >
+    <div className={`${className} group flex justify-between py-2 text-indigo-500 font-medium`}>
       {isEdit ? (
         <form
           onSubmit={(e) => {
@@ -82,15 +75,12 @@ const ListItem = ({ className, from, item, modalcHold }: any) => {
           <button type="submit" className="hidden"></button>
         </form>
       ) : (
-        <div
-          className="group-hover:cursor-pointer"
-          onClick={() => navigate('/create', { state: item })}
-        >
+        <div className="group-hover:cursor-pointer" onClick={onItemClick}>
           {item?.topic}
         </div>
       )}
       <div className="flex gap-x-4">
-        {/* {from === 'option' && (
+        {
           <div
             className="group-hover:cursor-pointer"
             onClick={() => {
@@ -105,12 +95,12 @@ const ListItem = ({ className, from, item, modalcHold }: any) => {
               <PencilSquareIcon className="w-6 h-6" />
             )}
           </div>
-        )}
-        {from === 'option' && (
+        }
+        {
           <div className="group-hover:cursor-pointer" onClick={() => modalRef.current.openModal()}>
             <TrashIcon className="w-6 h-6 text-black" />
           </div>
-        )}
+        }
         <Modal ref={modalRef}>
           <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
             <div>
@@ -140,10 +130,10 @@ const ListItem = ({ className, from, item, modalcHold }: any) => {
               </button>
             </div>
           </Dialog.Panel>
-        </Modal> */}
+        </Modal>
       </div>
     </div>
   )
 }
 
-export default ListItem
+export default OptionList
