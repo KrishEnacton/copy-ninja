@@ -1259,6 +1259,10 @@ input:checked + .toggle-bg {
   width: 50%;
 }
 
+.w-2\/3 {
+  width: 66.666667%;
+}
+
 .w-2\/4 {
   width: 50%;
 }
@@ -1720,6 +1724,10 @@ input:checked + .toggle-bg {
 
 .p-2\.5 {
   padding: 0.625rem;
+}
+
+.p-3 {
+  padding: 0.75rem;
 }
 
 .p-4 {
