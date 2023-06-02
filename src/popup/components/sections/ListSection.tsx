@@ -86,7 +86,7 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
             No topic found in <span className="font-bold">'{_selectedFolder.name}'</span> folder{' '}
             {searchInput.length > 0 && (
               <span>
-                for <span className="font-bold">'{searchInput} key word'</span>
+                for <span className="font-bold">'{searchInput}'</span> key word
               </span>
             )}
           </div>
