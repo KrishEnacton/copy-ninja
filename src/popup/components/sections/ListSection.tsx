@@ -81,15 +81,15 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
           ))}
         </>
       ) : (
-        <p className="text-lg p-3 mt-5">
-          No topic found for <span className="font-bold">'{_selectedFolder.name}'</span> folder{' '}
-          {searchInput.length > 0 ? (
-            <span>
-              and this search key word <span className="font-bold">'{searchInput}'</span>{' '}
-        </span>
-      ) : (
-        ''
-          )}
+        <p className="text-lg p-3 flex items-center justify-center h-full w-2/3 mx-auto">
+          <div className='w-full text-center'>
+            No topic found in <span className="font-bold">'{_selectedFolder.name}'</span> folder{' '}
+            {searchInput.length > 0 && (
+              <span>
+                for <span className="font-bold">'{searchInput} key word'</span>
+              </span>
+            )}
+          </div>
         </p>
       )}
     </div>
