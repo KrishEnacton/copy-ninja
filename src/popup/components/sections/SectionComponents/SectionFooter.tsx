@@ -34,6 +34,7 @@ const SectionFooter = ({ isTopic }: { isTopic?: boolean }) => {
     setKkcta(generateRandomSentence(query?.answer?.value))
     //@ts-ignore
     setKkans(generateRandomSentence(query?.cta?.value))
+    copy(ans + '\n\n\n' + cta)
     navigate('/topic', { state: { ans, cta } })
   }
   return (
@@ -44,7 +45,6 @@ const SectionFooter = ({ isTopic }: { isTopic?: boolean }) => {
           name={`Generate and Copy`}
           onclick={() => {
             generate_random_string()
-            copy(kkans + '\n\n\n' + kkcta)
           }}
         />
       ) : (

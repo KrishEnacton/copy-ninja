@@ -351,7 +351,7 @@ const Create: React.FC = () => {
           </div>
           <div className="w-full">
             <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
-              {item.cta.filter(Boolean).length > 0 ? (
+              {item?.cta?.filter(Boolean).length > 0 ? (
                 item?.cta
                   ?.filter((i) => {
                     if (i.label !== '' && i.value !== '') {
