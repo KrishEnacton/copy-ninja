@@ -8,7 +8,7 @@ const SectionHeader: React.FC = () => {
   const [topic, setTopic] = useRecoilState(topicAtom)
   return (
     <div className="flex justify-between text-lg items-center">
-      <div className="py-2 rounded-md cursor-pointer" onClick={() => navigate('/home')}>
+      <div className="py-2 rounded-md cursor-pointer" onClick={() => navigate(-1)}>
         <ArrowLeftIcon className="h-7 w-7" stroke="" />
       </div>
       <div className="flex gap-x-1 text-indigo-500 font-semibold">
