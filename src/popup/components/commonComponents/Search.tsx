@@ -36,7 +36,7 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
     if (getLocalStorage('allFolders')?.[0]) {
       _setSelectedFolder(getLocalStorage('allFolders')?.[0])
     }
-  }, [getLocalStorage('allFolders') || []])
+  }, [])
 
   function createFolderHandler() {
     setLoading(true)
@@ -247,7 +247,7 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
             type="button"
             onClick={() => {
               setModalType('topic')
-              modalRef.current.openModal()
+              from == 'popup' ? redirect() : modalRef.current.openModal()
             }}
             // onClick={() => redirect()}
             className=" md:w-1/6 ml-4 group rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

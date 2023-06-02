@@ -56,7 +56,7 @@ export const generatedAnswerState = atom({
 })
 
 export const generatedCTAState = atom({
-  key: 'generatedAnswer',
+  key: 'generatedCTAState',
   default: "" as string | undefined
 })
 

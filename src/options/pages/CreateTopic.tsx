@@ -339,6 +339,7 @@ const Create: React.FC = () => {
                   })
                   .map((ans, index: number) => (
                     <DisclosureComponent
+                      key={index}
                       editHandler={() => {
                         setAnswer({ label: ans.label, value: ans.value, id: ans.id })
                         setIsAnswersEdit({ ans: true })
@@ -371,6 +372,7 @@ const Create: React.FC = () => {
                   .map((ans, index: number) => (
                     <DisclosureComponent
                       ans={ans}
+                      key={index}
                       editHandler={() => {
                         setCTA({ label: ans.label, value: ans.value, id: ans.id })
                         setIsAnswersEdit({ cta: true })
