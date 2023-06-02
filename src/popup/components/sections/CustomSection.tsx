@@ -12,7 +12,7 @@ const CustomSection = ({ state }) => {
 
   useEffect(() => {
     setQuery((prevState) => ({ ...prevState, ...{ answer: selectedAnswer, cta: selectedCTA } }))
-  }, [])
+  }, [selectedAnswer, selectedCTA])
 
   return (
     <div className="px-2 py-4 text-lg text-black">
