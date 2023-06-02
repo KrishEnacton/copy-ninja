@@ -1,8 +1,5 @@
-import { useRecoilState } from 'recoil'
 import CustomInput from '../commonComponents/core/Input'
 import { useLocation } from 'react-router-dom'
-import { topicAtom } from '../../recoil/atoms'
-import { useEffect } from 'react'
 
 const TopicSection = () => {
   const location = useLocation()

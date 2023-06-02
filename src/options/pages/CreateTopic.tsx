@@ -1,5 +1,5 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
-import React, { Fragment, useLayoutEffect, useState } from 'react'
+import React, { Fragment, useLayoutEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { withAuth } from '../components/HOC/withAuth'
 import useSupabase from '../../supabase/use-supabase'
@@ -9,11 +9,14 @@ import { SpinnerLoader } from '../../popup/components/commonComponents/SpinnerLo
 import DisclosureComponent from '../components/Disclosure'
 import MainLayout from '../../popup/layouts/main'
 import { v4 as uuidv4 } from 'uuid'
+import Modal from '../../popup/components/commonComponents/core/Modal'
+import { Dialog } from '@headlessui/react'
 
 const Create: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [item, setItem] = useState<any>(location.state)
+  const modalRef = useRef<any>()
   const [loading, setLoading] = useState<{
     answerLoading?: boolean
     ctaLoading?: boolean
@@ -25,93 +28,83 @@ const Create: React.FC = () => {
     answerdeleteLoading: false,
     ctadeleLoading: false,
   })
-  const [answer, setAnswer] = useState<{ label?: string; value?: string; id?: string }>()
-  const [cta, setCTA] = useState<{ label: string; value: string; id?: string }>()
-  const [topicName, setTopicName] = useState('')
-  const [isEmpty, setIsEmpty] = useState<boolean>(false)
-  const [folder, setFolder] = useState<any>(null)
   const [answersEdit, setIsAnswersEdit] = useState<{ ans?: boolean; cta?: boolean }>({
     ans: false,
     cta: false,
   })
-  const [answersDelete, setIsAnswersDelete] = useState<{ ans?: boolean; cta?: boolean }>({
-    ans: false,
-    cta: false,
-  })
+  const [answer, setAnswer] = useState<{ label?: string; value?: string; id?: string }>()
+  const [cta, setCTA] = useState<{ label: string; value: string; id?: string }>()
+  const [selected, setSelected] = useState<any>(null)
+  const [topicName, setTopicName] = useState('')
 
-  const { createTopic, updateTopic } = useSupabase()
+  const { updateTopic } = useSupabase()
 
   async function submitHandler(e?: React.FormEvent<HTMLFormElement>) {
     e && e.preventDefault()
-    answer
+    answer?.label !== '' && answer?.value !== ''
       ? setLoading({ answerLoading: true })
-      : cta
+      : cta?.label !== '' && cta?.value !== ''
       ? setLoading({ ctaLoading: true })
       : setLoading({ answerLoading: false, ctaLoading: false })
     let result: any
     let body: TopicParams
 
-    if (topicName) {
-      if (item !== null) {
-        if (cta) {
-          body = { ...item, answer: item.answer, cta: [...item?.cta, cta], topic: topicName }
-          result = await updateTopic(body)
-        }
-        if (answer) {
-          body = { ...item, answer: [...item?.answer, answer], cta: item.cta, topic: topicName }
-          result = await updateTopic(body)
-        }
-      } else {
-        result = await createTopic({
-          folderId: folder,
-          topic: topicName,
-          id: uuidv4(),
-        })
+    if (cta?.label !== '' && cta?.value !== '') {
+      body = {
+        ...item,
+        answer: item.answer,
+        cta: [...item?.cta, { ...cta, id: uuidv4() }],
+        topic: topicName,
       }
-      if (result?.data?.[0]?.id) {
-        setItem(result.data?.[0])
-        setLoading({ answerLoading: false, ctaLoading: false })
+      result = await updateTopic(body)
+    }
+    if (answer?.label !== '' && answer?.value !== '') {
+      body = {
+        ...item,
+        answer: [...item?.answer, { ...answer, id: uuidv4() }],
+        cta: item.cta,
+        topic: topicName,
       }
-    } else {
-      setIsEmpty(true)
+      result = await updateTopic(body)
+    }
+    if (result?.data?.[0]?.id) {
+      setItem(result.data?.[0])
+      setLoading({ answerLoading: false, ctaLoading: false })
     }
   }
 
   async function editAnswersHandler() {
     let result: any
     let body: TopicParams
-    if (answersEdit.ans) {
+    if (answersEdit.ans || answer?.id) {
       setLoading({ answerLoading: true })
-      if (answer?.id) {
-        body = {
-          ...item,
-          answer: item.answer.map((item) => {
-            if (item.id === answer.id) {
-              item = answer
-            }
-            return item
-          }),
-          cta: item.cta,
-          topic: topicName,
-        }
-        result = await updateTopic(body)
+      body = {
+        ...item,
+        answer: item.answer.map((item) => {
+          if (item.id === answer?.id) {
+            item = answer
+          }
+          return item
+        }),
+        cta: item.cta,
+        topic: topicName,
       }
+      result = await updateTopic(body)
     }
-    if (answersEdit?.cta) {
-      if (answer?.id) {
-        body = {
-          ...item,
-          cta: item.cta.map((item) => {
-            if (item.id === cta?.id) {
-              item = cta
-            }
-            return item
-          }),
-          answer: item.answer,
-          topic: topicName,
-        }
-        result = await updateTopic(body)
+    if (answersEdit?.cta || cta?.id) {
+      setLoading({ ctaLoading: true })
+      body = {
+        ...item,
+        cta: item.cta.map((item) => {
+          if (item.id === cta?.id) {
+            item = cta
+          }
+          return item
+        }),
+        answer: item.answer,
+        topic: topicName,
       }
+      result = await updateTopic(body)
     }
     if (result?.data?.[0]?.id) {
       setItem(result.data?.[0])
@@ -119,41 +112,37 @@ const Create: React.FC = () => {
       setLoading({ answerLoading: false, ctaLoading: false })
     }
   }
-  async function deleteHandler() {
+  async function deleteHandler(selected: any) {
     let result: any
     let body: TopicParams
-    if (answersEdit.ans) {
-      setLoading({ answerLoading: true })
-      if (answer?.id) {
-        body = {
-          ...item,
-          answer: item.answer.filter((item) => item.id === answer?.id),
-          cta: item.cta,
-          topic: topicName,
-        }
-        result = await updateTopic(body)
+    if (selected?.type === 'ans') {
+      setLoading({ answerdeleteLoading: true })
+      body = {
+        ...item,
+        answer: item.answer.filter((item) => item.id !== selected?.ans?.id),
+        cta: item.cta,
+        topic: topicName,
       }
+      result = await updateTopic(body)
     }
-    if (answersEdit?.cta) {
-      if (answer?.id) {
-        body = {
-          ...item,
-          cta: item.cta.filter((item) => item.id === cta?.id),
-          answer: item.answer,
-          topic: topicName,
-        }
-        result = await updateTopic(body)
+    if (selected?.type === 'cta') {
+      setLoading({ ctadeleLoading: true })
+      body = {
+        ...item,
+        cta: item.cta.filter((item) => item.id !== selected?.ans?.id),
+        answer: item.answer,
+        topic: topicName,
       }
+      result = await updateTopic(body)
     }
     if (result?.data?.[0]?.id) {
       setItem(result.data?.[0])
       setIsAnswersEdit({ ans: false, cta: false })
       setLoading({
-        answerLoading: false,
-        ctaLoading: false,
         answerdeleteLoading: false,
         ctadeleLoading: false,
       })
+      modalRef.current.closeModal()
     }
   }
 
@@ -230,16 +219,6 @@ const Create: React.FC = () => {
                           onChange={(e) => setAnswer({ ...answer, value: e.target.value })}
                           className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500"
                         />
-                        {/* <input
-                          type="text"
-                          value={answer?.value}
-                          name={'Label for CTA'}
-                          id={'topic_ans_label'}
-                          className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500"
-                          placeholder={'Link with Regex Context'}
-                          //@ts-ignore
-                          onChange={(e) => setAnswer({ ...answer, value: e.target.value })}
-                        /> */}
                       </div>
                     </div>
                     <div className="flex justify-center items-center mt-4">
@@ -311,12 +290,20 @@ const Create: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => {
-                          submitHandler()
+                          if (answersEdit.ans || answersEdit.cta) {
+                            editAnswersHandler()
+                          } else submitHandler()
                           setCTA({ label: '', value: '' })
                         }}
                         className="rounded-md bg-indigo-600 px-10 p-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
-                        {loading.ctaLoading ? <SpinnerLoader className="h-5 w-5" /> : ' Add'}
+                        {loading.ctaLoading ? (
+                          <SpinnerLoader className="h-5 w-5" />
+                        ) : answersEdit.cta ? (
+                          'Edit'
+                        ) : (
+                          ' Add'
+                        )}
                       </button>
                     </div>
                   </div>
@@ -339,13 +326,14 @@ const Create: React.FC = () => {
                   })
                   .map((ans, index: number) => (
                     <DisclosureComponent
+                      key={index}
                       editHandler={() => {
                         setAnswer({ label: ans.label, value: ans.value, id: ans.id })
                         setIsAnswersEdit({ ans: true })
                       }}
                       deleteHandler={() => {
-                        setIsAnswersDelete({ ans: true })
-                        deleteHandler()
+                        setSelected({ type: 'ans', ans })
+                        modalRef.current.openModal()
                       }}
                       ans={ans}
                       index={index}
@@ -360,7 +348,7 @@ const Create: React.FC = () => {
           </div>
           <div className="w-full">
             <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
-              {item.cta.filter(Boolean).length > 0 ? (
+              {item?.cta?.filter(Boolean).length > 0 ? (
                 item?.cta
                   ?.filter((i) => {
                     if (i.label !== '' && i.value !== '') {
@@ -371,13 +359,14 @@ const Create: React.FC = () => {
                   .map((ans, index: number) => (
                     <DisclosureComponent
                       ans={ans}
+                      key={index}
                       editHandler={() => {
                         setCTA({ label: ans.label, value: ans.value, id: ans.id })
                         setIsAnswersEdit({ cta: true })
                       }}
                       deleteHandler={() => {
-                        setIsAnswersDelete({ cta: true })
-                        deleteHandler()
+                        setSelected({ type: 'cta', ans })
+                        modalRef.current.openModal()
                       }}
                       index={index}
                       loading={loading}
@@ -389,6 +378,37 @@ const Create: React.FC = () => {
               )}
             </div>
           </div>
+          <Modal ref={modalRef}>
+            <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+              <div>
+                <div className="mt-3 text-center sm:mt-5">
+                  <Dialog.Title as="h3" className="text-base font-bold leading-6 text-red-900 mb-4">
+                    {`Sure, you want to delete the ${selected?.type == 'ans' ? 'Answer' : 'CTA'}?`}
+                  </Dialog.Title>
+                </div>
+              </div>
+              <div className="mt-5 sm:mt-6 flex gap-x-2">
+                <button
+                  type="button"
+                  className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                  onClick={() => deleteHandler(selected)}
+                >
+                  {loading.answerdeleteLoading || loading.ctadeleLoading ? (
+                    <SpinnerLoader className="w-5 h-5" />
+                  ) : (
+                    'Yes'
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                  onClick={() => modalRef.current.closeModal()}
+                >
+                  Cancel
+                </button>
+              </div>
+            </Dialog.Panel>
+          </Modal>
         </div>
       </div>
     </MainLayout>

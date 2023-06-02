@@ -59,6 +59,7 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
                 <PopupList
                   className={'text-lg px-4'}
                   item={list}
+                  key={index}
                   onItemClick={() => {
                     navigate('/select', { state: list })
                   }}
@@ -70,6 +71,7 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
                 <OptionList
                   className={'text-lg px-4'}
                   item={list}
+                  key={index}
                   onItemClick={() => {
                     navigate('/create', { state: list })
                   }}

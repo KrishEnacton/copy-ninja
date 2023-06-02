@@ -17,10 +17,10 @@ const DisclosureComponent = ({
   deleteHandler: any
 }) => {
   return (
-    <Disclosure as="div" className="my-2" key={index}>
+    <Disclosure as="div" className="my-2">
       {({ open }) => (
         <>
-          <div className="flex border border-slate-300 bg-slate-50 rounded-md px-4">
+          <div  className="flex border border-slate-300 bg-slate-50 rounded-md px-4">
             <Disclosure.Button className="flex w-full justify-between rounded-lg pr-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75">
               <span>{ans?.label ?? ''}</span>
               <ChevronUpIcon

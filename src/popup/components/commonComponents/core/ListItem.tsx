@@ -89,59 +89,6 @@ const ListItem = ({ className, from, item, modalcHold }: any) => {
           {item?.topic}
         </div>
       )}
-      <div className="flex gap-x-4">
-        {/* {from === 'option' && (
-          <div
-            className="group-hover:cursor-pointer"
-            onClick={() => {
-              setIsEdit((prev) => !prev)
-            }}
-          >
-            {isEdit ? (
-              <CheckCircleIcon className="w-6 h-6" />
-            ) : loading.editLoading ? (
-              <SpinnerLoader className="w-6 h-6" />
-            ) : (
-              <PencilSquareIcon className="w-6 h-6" />
-            )}
-          </div>
-        )}
-        {from === 'option' && (
-          <div className="group-hover:cursor-pointer" onClick={() => modalRef.current.openModal()}>
-            <TrashIcon className="w-6 h-6 text-black" />
-          </div>
-        )}
-        <Modal ref={modalRef}>
-          <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
-            <div>
-              <div className="mt-3 text-center sm:mt-5">
-                <Dialog.Title as="h3" className="text-base font-bold leading-6 text-red-900 mb-4">
-                  Sure, you want to delete the Topic?
-                </Dialog.Title>
-                <div className="text-xs text-red-500">
-                  It will delete all the answers and ctas inside it.
-                </div>
-              </div>
-            </div>
-            <div className="mt-5 sm:mt-6 flex gap-x-2">
-              <button
-                type="button"
-                className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                onClick={() => deleteTopicHandler(item.id)}
-              >
-                {loading.deleteLoading ? <SpinnerLoader className="w-5 h-5" /> : 'Yes'}
-              </button>
-              <button
-                type="button"
-                className="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
-                onClick={() => modalRef.current.closeModal()}
-              >
-                Cancel
-              </button>
-            </div>
-          </Dialog.Panel>
-        </Modal> */}
-      </div>
     </div>
   )
 }
