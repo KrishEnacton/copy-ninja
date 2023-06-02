@@ -383,7 +383,7 @@ const Create: React.FC = () => {
               <div>
                 <div className="mt-3 text-center sm:mt-5">
                   <Dialog.Title as="h3" className="text-base font-bold leading-6 text-red-900 mb-4">
-                    {`Sure, you want to delete the ${selected?.type == 'ans' ? 'Answer' : 'CTA'}?`}
+                    {`Sure, you want to delete the ${selected?.type == 'ans' ? 'answer' : 'CTA'}?`}
                   </Dialog.Title>
                 </div>
               </div>
