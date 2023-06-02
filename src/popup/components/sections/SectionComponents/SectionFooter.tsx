@@ -17,7 +17,6 @@ const SectionFooter = ({ isTopic }: { isTopic?: boolean }) => {
   //@ts-ignore
   const [kkcta, setKkcta] = useState(generateRandomSentence(query?.cta?.value))
 
-  console.log({ kkans, kkcta })
   useLayoutEffect(() => {
     //@ts-ignore
     setKkans(generateRandomSentence(query?.answer?.value))
@@ -52,7 +51,6 @@ const SectionFooter = ({ isTopic }: { isTopic?: boolean }) => {
           className={`px-8 py-3 rounded-lg w-1/2 bg-indigo-600 text-sm font-semibold text-white hover:bg-indigo-700`}
           name={isCopied ? 'Copied' : `Copy`}
           onclick={() => {
-            console.log(kkans, kkcta)
             copy(kkans + '\n\n\n' + kkcta)
             setIsCopied(true)
             setTimeout(() => {

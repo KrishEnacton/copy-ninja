@@ -17,7 +17,6 @@ const Create: React.FC = () => {
   const location = useLocation()
   const [item, setItem] = useState<any>(location.state)
   const modalRef = useRef<any>()
-  console.log({ item })
   const [loading, setLoading] = useState<{
     answerLoading?: boolean
     ctaLoading?: boolean
@@ -50,17 +49,16 @@ const Create: React.FC = () => {
     let result: any
     let body: TopicParams
 
-    if (cta) {
+    if (cta?.label !== '' && cta?.value !== '') {
       body = {
         ...item,
         answer: item.answer,
         cta: [...item?.cta, { ...cta, id: uuidv4() }],
         topic: topicName,
       }
-      console.log({ body })
       result = await updateTopic(body)
     }
-    if (answer) {
+    if (answer?.label !== '' && answer?.value !== '') {
       body = {
         ...item,
         answer: [...item?.answer, { ...answer, id: uuidv4() }],
@@ -137,7 +135,6 @@ const Create: React.FC = () => {
       }
       result = await updateTopic(body)
     }
-    console.log({ result })
     if (result?.data?.[0]?.id) {
       setItem(result.data?.[0])
       setIsAnswersEdit({ ans: false, cta: false })
