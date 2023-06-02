@@ -107,7 +107,6 @@ const useSupabase = () => {
   async function updateTopic(body: TopicParams) {
     try {
       const { topic, answer, cta, id } = body
-      console.log(body, 'from hook')
       const { data, error } = await supabase
         .from('tbl_topic')
         .update([{ topic: topic ?? '', answer: answer ?? [''], cta: cta ?? [''] }])

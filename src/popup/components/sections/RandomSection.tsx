@@ -15,7 +15,6 @@ const RandomSection = ({ state }) => {
   )
 
   useEffect(() => {
-    console.log({ selectedAnswer, selectedCTA })
     setQuery((prevState) => ({ ...prevState, ...{ answer: selectedAnswer, cta: selectedCTA } }))
   }, [])
   return (
