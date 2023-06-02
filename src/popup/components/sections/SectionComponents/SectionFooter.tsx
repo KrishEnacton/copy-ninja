@@ -2,27 +2,38 @@ import CustomButton from '../../commonComponents/core/Button'
 import { useNavigate } from 'react-router-dom'
 import { QueryProps } from '../../../../utils/global'
 import { useRecoilState } from 'recoil'
-import { generatedAnswerState, generatedCTAState, queryParams } from '../../../recoil/atoms'
+import { queryParams } from '../../../recoil/atoms'
 import { generateRandomSentence } from '../../../../utils'
 import copy from 'copy-to-clipboard'
-import { useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 
 const SectionFooter = ({ isTopic }: { isTopic?: boolean }) => {
   const [query, setQuery] = useRecoilState<QueryProps>(queryParams)
   const navigate = useNavigate()
-  const [isCopied, setIsCopied] = useState(false);
+  const [isCopied, setIsCopied] = useState(false)
 
-  const [kkans, setKkans] = useState('');
-  const [kkcta, setKkcta] = useState('');
+  //@ts-ignore
+  const [kkans, setKkans] = useState(generateRandomSentence(query?.answer?.value))
+  //@ts-ignore
+  const [kkcta, setKkcta] = useState(generateRandomSentence(query?.cta?.value))
 
+  console.log({ kkans, kkcta })
+  useLayoutEffect(() => {
+    //@ts-ignore
+    setKkans(generateRandomSentence(query?.answer?.value))
+    //@ts-ignore
+    setKkcta(generateRandomSentence(query?.cta?.value))
+  }, [])
 
   function generate_random_string() {
     //@ts-ignore
     const ans: any = generateRandomSentence(query?.answer?.value)
     //@ts-ignore
     const cta: any = generateRandomSentence(query?.cta?.value)
-    setKkcta(cta);
-    setKkans(ans)
+    //@ts-ignore
+    setKkcta(generateRandomSentence(query?.answer?.value))
+    //@ts-ignore
+    setKkans(generateRandomSentence(query?.cta?.value))
     navigate('/topic', { state: { ans, cta } })
   }
   return (
@@ -33,18 +44,20 @@ const SectionFooter = ({ isTopic }: { isTopic?: boolean }) => {
           name={`Generate and Copy`}
           onclick={() => {
             generate_random_string()
+            copy(kkans + '\n\n\n' + kkcta)
           }}
         />
       ) : (
         <CustomButton
           className={`px-8 py-3 rounded-lg w-1/2 bg-indigo-600 text-sm font-semibold text-white hover:bg-indigo-700`}
-          name={isCopied?'Copied':`Copy`}
+          name={isCopied ? 'Copied' : `Copy`}
           onclick={() => {
-            copy(kkans+'\n'+kkcta)
+            console.log(kkans, kkcta)
+            copy(kkans + '\n\n\n' + kkcta)
             setIsCopied(true)
             setTimeout(() => {
               setIsCopied(false)
-            }, 1000);
+            }, 1000)
           }}
         />
       )}
