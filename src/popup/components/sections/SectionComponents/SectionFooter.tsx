@@ -33,7 +33,7 @@ const SectionFooter = ({ isTopic }: { isTopic?: boolean }) => {
     setKkcta(generateRandomSentence(query?.answer?.value))
     //@ts-ignore
     setKkans(generateRandomSentence(query?.cta?.value))
-    copy(ans + '\n\n\n' + cta)
+    copy(ans + '\n\n' + cta)
     navigate('/topic', { state: { ans, cta } })
   }
   return (
@@ -51,7 +51,7 @@ const SectionFooter = ({ isTopic }: { isTopic?: boolean }) => {
           className={`px-8 py-3 rounded-lg w-1/2 bg-indigo-600 text-sm font-semibold text-white hover:bg-indigo-700`}
           name={isCopied ? 'Copied' : `Copy`}
           onclick={() => {
-            copy(kkans + '\n\n\n' + kkcta)
+            copy(kkans + '\n\n' + kkcta)
             setIsCopied(true)
             setTimeout(() => {
               setIsCopied(false)
