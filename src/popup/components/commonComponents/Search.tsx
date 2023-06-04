@@ -27,16 +27,19 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
   )
   const [topicLoading, setTopicLoading] = useState(false)
   const [modalType, setModalType] = useState<'topic' | 'folder'>()
+  const [allFolderStorage, setAllFolderStorage] = useState(getLocalStorage('allFolders') || [])
   const modalRef = useRef<any>()
 
   const navigate = useNavigate()
   const createTopicURL = chrome.runtime.getURL('/options.html#/home')
+  const localStorageAllFoldersData = JSON.stringify(getLocalStorage('allFolders') || [])
 
   useEffect(() => {
+    setAllFolderStorage(getLocalStorage('allFolders') || [])
     if (getLocalStorage('allFolders')?.[0]) {
       _setSelectedFolder(getLocalStorage('allFolders')?.[0])
     }
-  }, [])
+  }, [localStorageAllFoldersData])
 
   function createFolderHandler() {
     setLoading(true)
@@ -65,6 +68,7 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
         modalRef.current.closeModal()
       })
   }
+
   function redirect() {
     chrome.tabs.query({}, (tabs) => {
       if (from === 'popup') {
@@ -155,9 +159,10 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
           <div className="mt-2">
             <KKDropdown
               id="folder"
-              selected={_selectedFolder}
-              setSelected={_setSelectedFolder}
-              listData={getLocalStorage('allFolders') || []}
+              selected={selected}
+              setSelected={setSelected}
+              listData={allFolderStorage}
+              setDefaultValueKey={'defaultSelectedFolder'}
             />
           </div>
         </div>
@@ -210,7 +215,7 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
             id="folder"
             selected={selected}
             setSelected={setSelected}
-            listData={getLocalStorage('allFolders') || []}
+            listData={allFolderStorage}
             setDefaultValueKey={'defaultSelectedFolder'}
           />
           {from === 'option' && (
