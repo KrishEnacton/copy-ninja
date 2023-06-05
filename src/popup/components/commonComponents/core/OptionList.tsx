@@ -8,6 +8,9 @@ import { isEditState } from '../../../../options/recoil/atoms'
 import { Dialog } from '@headlessui/react'
 import Modal from './Modal'
 import { XMarkIcon } from '@heroicons/react/20/solid'
+import pin from '../../../../assets/pin.png'
+import unpin from '../../../../assets/unpin.png'
+import { getLocalStorage, setLocalStorage } from '../../../../utils'
 
 const OptionList = ({ className, item, onItemClick }: any) => {
   const { updateTopic, deleteTopic } = useSupabase()
@@ -55,7 +58,9 @@ const OptionList = ({ className, item, onItemClick }: any) => {
   }, [isEdit])
 
   return (
-    <div className={`${className} group flex justify-between py-2 text-indigo-500 font-medium`}>
+    <div
+      className={`${className} group flex justify-between items-center py-2 text-indigo-500 font-medium`}
+    >
       {isEdit ? (
         <form
           onSubmit={(e) => {
@@ -78,9 +83,41 @@ const OptionList = ({ className, item, onItemClick }: any) => {
           <button type="submit" className="hidden"></button>
         </form>
       ) : (
-        <div className="group-hover:cursor-pointer" onClick={onItemClick}>
-          {item?.topic}
-        </div>
+        <>
+          {item.pin ? (
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                let pinned = getLocalStorage('pinned') || []
+                setLocalStorage(
+                  'pinned',
+                  pinned.filter((a) => a != item.id),
+                )
+                window.dispatchEvent(new Event('storage'))
+              }}
+            >
+              <img className="object-contain h-5 w-5" src={unpin} alt="" />
+            </div>
+          ) : (
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                let pinned = getLocalStorage('pinned') || []
+
+                if (pinned.includes(item?.id)) return
+                pinned.push(item?.id)
+                setLocalStorage('pinned', pinned)
+                window.dispatchEvent(new Event('storage'))
+              }}
+            >
+              <img className="object-contain h-5 w-5" src={pin} alt="" />
+            </div>
+          )}
+
+          <div className="group-hover:cursor-pointer flex-1 ml-3" onClick={onItemClick}>
+            {item?.topic}
+          </div>
+        </>
       )}
       <div className="flex gap-x-4">
         {
