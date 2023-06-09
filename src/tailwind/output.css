@@ -1127,6 +1127,10 @@ input:checked + .toggle-bg {
   margin-left: 0.25rem;
 }
 
+.ml-3 {
+  margin-left: 0.75rem;
+}
+
 .ml-4 {
   margin-left: 1rem;
 }
@@ -1716,6 +1720,11 @@ input:checked + .toggle-bg {
 
 .fill-blue-900 {
   fill: #233876;
+}
+
+.object-contain {
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 
 .p-1 {
