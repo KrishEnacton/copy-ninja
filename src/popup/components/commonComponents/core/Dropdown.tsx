@@ -2,7 +2,7 @@ import { Fragment, useEffect, useLayoutEffect } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useRecoilState } from 'recoil'
-import { selectedType, topicType } from '../../../recoil/atoms'
+import { selectedFolderState, selectedType, topicType } from '../../../recoil/atoms'
 
 const Dropdown = ({
   selectOptions,
@@ -17,6 +17,7 @@ const Dropdown = ({
 }) => {
   const [selected, setSelected] = useRecoilState(topicType(id))
   const [selectedOption, setSelectedOption] = useRecoilState(selectedType)
+  const [selectedFolder, setSelectedFolder] = useRecoilState(selectedFolderState)
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
   }
@@ -24,16 +25,11 @@ const Dropdown = ({
   function handleChange(value: string) {
     if (typeof setOptions === 'function') setOptions({ value })
   }
-
   useEffect(() => {
     if (id === 'topicType') {
       setSelected('random')
     }
   }, [])
-
-  useEffect(() => {
-    console.log("check", { selected, selectedOption })
-  }, [selected, selectedOption])
 
   return (
     <div className={`${className} flex justify-center relative w-full`}>
@@ -56,24 +52,28 @@ const Dropdown = ({
         >
           <Menu.Items className="absolute right-0 left-0 m-auto max-h-28 overflow-auto z-10 mt-2 w-full origin-top-center rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1 w-full">
-              {selectOptions.filter(Boolean).length > 0 &&
-                selectOptions?.map((selectOption, index) => (
+              {selectOptions?.filter(Boolean).length > 0 &&
+                selectOptions?.map((selectOption: any, index) => (
                   <Menu.Item key={index}>
                     {({ active }) => (
-                      <a
-                        href="#"
+                      <div
                         className={classNames(
                           active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                          'block px-4 py-2 text-center text-sm',
+                          'block px-4 py-2 text-left text-sm',
                         )}
                         onClick={() => {
-                          setSelected(selectOption)
+                          id === 'folder'
+                            ? setSelected(selectOption.name)
+                            : setSelected(selectOption)
                           if (id === 'topicType') setSelectedOption(selectOption)
                           handleChange(selectOption)
+                          if (id === 'folder') {
+                            setSelectedFolder(selectOption)
+                          }
                         }}
                       >
-                        {selectOption}
-                      </a>
+                        {id === 'folder' ? selectOption?.name : selectOption}
+                      </div>
                     )}
                   </Menu.Item>
                 ))}

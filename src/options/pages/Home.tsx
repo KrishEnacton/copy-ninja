@@ -3,24 +3,16 @@ import Search from '../../popup/components/commonComponents/Search'
 import ListView from '../../popup/components/sections/ListSection'
 import { useNavigate } from 'react-router-dom'
 import { withAuth } from '../components/HOC/withAuth'
+import MainLayout from '../../popup/layouts/main'
 
 const Home: React.FC = () => {
   const navigate = useNavigate()
 
   return (
-    <div className="">
-      <div className="pl-4">
-        <button
-          type="button"
-          onClick={() => navigate('/create')}
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          New Topic
-        </button>
-      </div>
+    <MainLayout isOption={true} headerClassName="w-full" className={'items-center w-[700px] mx-auto'}>
       <Search className="w-full" from='option' />
       <ListView className="w-[700px] h-[600px]" from={'option'} />
-    </div>
+    </MainLayout>
   )
 }
 

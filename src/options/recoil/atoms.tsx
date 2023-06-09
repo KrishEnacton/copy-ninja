@@ -3,7 +3,7 @@ import { atom } from "recoil";
 
 export const userState = atom({
     key: 'userState',
-    default: JSON.parse(localStorage.getItem("user") ||  "{}") as User
+    default: JSON.parse(localStorage.getItem("user") ||  "{}") as any
 })
 export const isEditState = atom({
     key: 'isEditState',

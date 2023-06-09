@@ -4,7 +4,7 @@ import Header from '../components/commonComponents/Header'
 const MainLayout = ({
   children,
   className,
-  headerClassName,
+  headerClassName
 }: {
   children: React.ReactNode
   className?: string

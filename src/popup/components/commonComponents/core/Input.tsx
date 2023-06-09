@@ -6,7 +6,8 @@ const CustomInput = ({
   name,
   placeholder,
   setInput,
-  checked
+  checked,
+  value
 }: any) => {
   function handleInput(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { value } = e.target
@@ -24,6 +25,7 @@ const CustomInput = ({
     <Fragment>
       {type === 'textarea' ? (
         <textarea
+        value={value}
           className={`p-2 rounded-md text-black ${className}`}
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => handleInput(e)}
         />
@@ -42,6 +44,7 @@ const CustomInput = ({
           type={type}
           id={name}
           name={name}
+          value={value}
           placeholder={placeholder}
           onChange={(e: ChangeEvent<HTMLInputElement>) => handleInput(e)}
         />

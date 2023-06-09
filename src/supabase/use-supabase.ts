@@ -1,8 +1,13 @@
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import { setLocalStorage } from '../utils'
 import { TopicParams } from '../utils/global'
 import { supabase } from './init'
+import { allFoldersAtom, selectedFolder } from '../popup/recoil/atoms'
 
 const useSupabase = () => {
+  const [allFolders, setAllFolders] = useRecoilState<any[]>(allFoldersAtom)
+  const setSelectedFolder = useSetRecoilState(selectedFolder)
+
   async function login({ email, password }) {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -25,7 +30,6 @@ const useSupabase = () => {
         email,
         password,
       })
-      console.log({ data })
       chrome.storage.local.set({ user: data })
       localStorage.setItem('user', JSON.stringify(data))
       return data.user
@@ -77,7 +81,12 @@ const useSupabase = () => {
 
   async function getAllFolders() {
     try {
-      const { data, error } = await supabase.from('tbl_folder').select('*')
+      const { data, error }: { data: any; error: any } = await supabase
+        .from('tbl_folder')
+        .select('*')
+        .order('id', { ascending: false })
+      setAllFolders(data as any)
+      if (data?.length > 0) setSelectedFolder(data[0])
       setLocalStorage('allFolders', data)
       return { data, error }
     } catch (error) {}
@@ -86,12 +95,10 @@ const useSupabase = () => {
   async function createTopic(body: TopicParams) {
     try {
       const { folderId, topic, answer, cta } = body
-      console.log({ body })
       const { data, error } = await supabase
         .from('tbl_topic')
-        .insert([
-          { folder_id: folderId, topic: topic ?? '', answer: answer ?? [''], cta: cta ?? [''] },
-        ]).select()
+        .insert([{ folder_id: folderId, topic: topic ?? '', answer: answer ?? [], cta: cta ?? [] }])
+        .select()
       return { data, error }
     } catch (error) {
       console.log(error)
@@ -100,10 +107,9 @@ const useSupabase = () => {
   async function updateTopic(body: TopicParams) {
     try {
       const { topic, answer, cta, id } = body
-      console.log(body, 'id')
       const { data, error } = await supabase
         .from('tbl_topic')
-        .update([{ topic: topic ?? '', answer: answer ?? [''], cta: cta ?? [''] },])
+        .update([{ topic: topic ?? '', answer: answer ?? [''], cta: cta ?? [''] }])
         .eq('id', id)
         .select()
       return { data, error }
@@ -122,7 +128,10 @@ const useSupabase = () => {
   }
   async function getAllTopics() {
     try {
-      const { data, error } = await supabase.from('tbl_topic').select('*')
+      const { data, error } = await supabase
+        .from('tbl_topic')
+        .select('*')
+        .order('id', { ascending: false })
       setLocalStorage('allTopics', data)
       return { data, error }
     } catch (error) {

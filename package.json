@@ -29,11 +29,13 @@
     "@heroicons/react": "^2.0.18",
     "@supabase/supabase-js": "^2.22.0",
     "@types/chrome": "^0.0.236",
+    "copy-to-clipboard": "^3.3.3",
     "flowbite": "^1.6.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.2",
-    "recoil": "^0.7.7"
+    "recoil": "^0.7.7",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^1.0.12",

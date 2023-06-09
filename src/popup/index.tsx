@@ -4,6 +4,7 @@ import App from './Popup'
 import '../tailwind/input.css'
 import '../tailwind/output.css'
 import { RecoilRoot } from 'recoil'
+
 //@ts-ignore
 document.getElementById('app').classList.add('h-[450px]')
 //@ts-ignore

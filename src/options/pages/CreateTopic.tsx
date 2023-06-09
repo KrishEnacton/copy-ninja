@@ -1,61 +1,161 @@
-import { ArrowLeftIcon, ChevronUpIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
-import React, { Fragment, useEffect, useLayoutEffect, useState } from 'react'
-import InputGroup from '../components/InputGroup'
+import { ArrowLeftIcon } from '@heroicons/react/24/outline'
+import React, { useLayoutEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Disclosure } from '@headlessui/react'
 import { withAuth } from '../components/HOC/withAuth'
 import useSupabase from '../../supabase/use-supabase'
-import { getLocalStorage } from '../../utils'
 import { TopicParams } from '../../utils/global'
 import { SpinnerLoader } from '../../popup/components/commonComponents/SpinnerLoader'
-import { PencilSquareIcon } from '@heroicons/react/24/outline'
+import DisclosureComponent from '../components/Disclosure'
+import MainLayout from '../../popup/layouts/main'
+import { v4 as uuidv4 } from 'uuid'
+import Modal from '../../popup/components/commonComponents/core/Modal'
+import { Dialog } from '@headlessui/react'
 
 const Create: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const [item, setItem] = useState<any>(null)
-  const [loading, setLoading] = useState<boolean>(false)
-  const [answer, setAnswer] = useState<{ label: any; value: any }>()
+  const [item, setItem] = useState<any>(location.state)
+  const modalRef = useRef<any>()
+  const [loading, setLoading] = useState<{
+    answerLoading?: boolean
+    ctaLoading?: boolean
+    answerdeleteLoading?: boolean
+    ctadeleLoading?: boolean
+  }>({
+    answerLoading: false,
+    ctaLoading: false,
+    answerdeleteLoading: false,
+    ctadeleLoading: false,
+  })
+  const [answersEdit, setIsAnswersEdit] = useState<{ ans?: boolean; cta?: boolean }>({
+    ans: false,
+    cta: false,
+  })
+  const [answer, setAnswer] = useState<{ label?: string; value?: string; id?: string }>()
+  const [cta, setCTA] = useState<{ label: string; value: string; id?: string }>()
+  const [selected, setSelected] = useState<any>(null)
   const [topicName, setTopicName] = useState('')
-  const [folder, setFolder] = useState<any>(null)
-  const [cta, setCTA] = useState<{ label: any; value: any }>()
 
-  const { createTopic, updateTopic } = useSupabase()
+  const { updateTopic } = useSupabase()
 
   async function submitHandler(e?: React.FormEvent<HTMLFormElement>) {
     e && e.preventDefault()
-    setLoading(true)
+    answer?.label !== '' && answer?.value !== ''
+      ? setLoading({ answerLoading: true })
+      : cta?.label !== '' && cta?.value !== ''
+      ? setLoading({ ctaLoading: true })
+      : setLoading({ answerLoading: false, ctaLoading: false })
     let result: any
     let body: TopicParams
-    if (item !== null) {
-      console.log({ cta, answer })
-      if (cta) {
-        body = { ...item, answer: [...item.answer], cta: [...item.cta, cta], topic: topicName }
-        result = await updateTopic(body)
-      }
-      if (answer) {
-        body = { ...item, answer: [...item.answer, answer], cta: [...item.cta], topic: topicName }
-        result = await updateTopic(body)
-      }
-    } else {
-      result = await createTopic({
-        folderId: folder,
+
+    if (cta?.label !== '' && cta?.value !== '') {
+      body = {
+        ...item,
+        answer: item.answer,
+        cta: [...item?.cta, { ...cta, id: uuidv4() }],
         topic: topicName,
-      })
+      }
+      result = await updateTopic(body)
+    }
+    if (answer?.label !== '' && answer?.value !== '') {
+      body = {
+        ...item,
+        answer: [...item?.answer, { ...answer, id: uuidv4() }],
+        cta: item.cta,
+        topic: topicName,
+      }
+      result = await updateTopic(body)
     }
     if (result?.data?.[0]?.id) {
       setItem(result.data?.[0])
-      setLoading(false)
+      setLoading({ answerLoading: false, ctaLoading: false })
+    }
+  }
+
+  async function editAnswersHandler() {
+    let result: any
+    let body: TopicParams
+    if (answersEdit.ans || answer?.id) {
+      setLoading({ answerLoading: true })
+      body = {
+        ...item,
+        answer: item.answer.map((item) => {
+          if (item.id === answer?.id) {
+            item = answer
+          }
+          return item
+        }),
+        cta: item.cta,
+        topic: topicName,
+      }
+      result = await updateTopic(body)
+    }
+    if (answersEdit?.cta || cta?.id) {
+      setLoading({ ctaLoading: true })
+      body = {
+        ...item,
+        cta: item.cta.map((item) => {
+          if (item.id === cta?.id) {
+            item = cta
+          }
+          return item
+        }),
+        answer: item.answer,
+        topic: topicName,
+      }
+      result = await updateTopic(body)
+    }
+    if (result?.data?.[0]?.id) {
+      setItem(result.data?.[0])
+      setIsAnswersEdit({ ans: false, cta: false })
+      setLoading({ answerLoading: false, ctaLoading: false })
+    }
+  }
+  async function deleteHandler(selected: any) {
+    let result: any
+    let body: TopicParams
+    if (selected?.type === 'ans') {
+      setLoading({ answerdeleteLoading: true })
+      body = {
+        ...item,
+        answer: item.answer.filter((item) => item.id !== selected?.ans?.id),
+        cta: item.cta,
+        topic: topicName,
+      }
+      result = await updateTopic(body)
+    }
+    if (selected?.type === 'cta') {
+      setLoading({ ctadeleLoading: true })
+      body = {
+        ...item,
+        cta: item.cta.filter((item) => item.id !== selected?.ans?.id),
+        answer: item.answer,
+        topic: topicName,
+      }
+      result = await updateTopic(body)
+    }
+    if (result?.data?.[0]?.id) {
+      setItem(result.data?.[0])
+      setIsAnswersEdit({ ans: false, cta: false })
+      setLoading({
+        answerdeleteLoading: false,
+        ctadeleLoading: false,
+      })
+      modalRef.current.closeModal()
     }
   }
 
   useLayoutEffect(() => {
     setItem(location.state)
     setTopicName(location?.state?.topic)
-  }, [])
+  }, [location.state])
 
   return (
-    <Fragment>
+    <MainLayout
+      isOption={true}
+      headerClassName="w-full"
+      className={'items-center w-[700px] mx-auto'}
+    >
       <div className="text-xl font-bold flex gap-x-4">
         <span
           className="isolate inline-flex rounded-md shadow-sm"
@@ -63,285 +163,254 @@ const Create: React.FC = () => {
         >
           <button
             type="button"
-            className="relative inline-flex items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+            className="relative inline-flex items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:z-10 ring-1 ring-inset ring-gray-300 "
           >
             <ArrowLeftIcon className="-ml-0.5 h-5 w-5 text-gray-400" aria-hidden="true" />
             View All Topics
           </button>
-        </span>aaaaa
+        </span>
       </div>
-      <div className="my-4">
-        <div className="flex gap-x-3">
-          <div>
-            <form onSubmit={(e) => submitHandler(e)} className="mt-2 flex rounded-md shadow-sm">
-              <div className="relative flex flex-grow items-stretch focus-within:z-10">
-                <input
-                  type="text"
-                  name="topicName"
-                  id="topicName"
-                  value={topicName}
-                  className="block w-full rounded-none rounded-l-md border-0 py-2 pl-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  placeholder="Enter Topic"
-                  onChange={(e) => setTopicName(e.target.value)}
-                />
-              </div>
-              {item === null && (
-                <div className="outset-y-1 border-y border-gray-300 right-0 flex items-center">
-                  <label htmlFor="folders" className="sr-only">
-                    Folders
-                  </label>
-                  <select
-                    id="folders"
-                    name="folders"
-                    onChange={(e) => {
-                      console.log({ tar: e.target.value })
-                      setFolder(e.target.value)
-                    }}
-                    className="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                  >
-                    {[
-                      { name: 'select folder', value: 'select folder' },
-                      ...getLocalStorage('allFolders'),
-                    ].map((folder) => (
-                      <option value={folder?.id}>{folder?.name}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-              <button
-                type="submit"
-                className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-              >
-                {item !== null ? 'Edit Topic' : 'Create Topic'}
-              </button>
-            </form>
-          </div>
+      <div className="mt-4">
+        <div className="flex gap-x-3 justify-center items-center">
+          <div className="text-2xl font-bold">Topic: {item?.topic}</div>
         </div>
       </div>
-      {item !== null ? (
+      <div>
         <div>
-          <div>
-            <div className="flex gap-x-4 mt-6">
-              <div className="flex flex-col justify-center items-center">
-                <div className="text-lg font-bold">Answers</div>
-
-                <div className="flex gap-x-4">
-                  <div className="flex flex-col justify-center items-center">
-                    <div className="text-lg font-bold">Answers</div>
-                    <div className="w-[350px]">
-                      <div className="isolate -space-y-px rounded-md shadow-sm">
-                        <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-indigo-600">
-                          <label
-                            htmlFor={'ans_label'}
-                            className="block text-xs font-medium text-gray-900"
-                          >
-                            Label
-                          </label>
-                          <input
-                            type="text"
-                            name={'Answer with Regex'}
-                            id={'ans_label'}
-                            value={answer?.label}
-                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0  sm:leading-6"
-                            placeholder={'Answer with Regex'}
-                            //@ts-ignore
-                            onChange={(e) => setAnswer({ ...answer, label: e.target.value })}
-                          />
-                        </div>
-                        <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-indigo-600">
-                          <label
-                            htmlFor={'cta_label'}
-                            className="block text-xs font-medium text-gray-900"
-                          >
-                            Topic Answer
-                          </label>
-                          <input
-                            type="text"
-                            value={answer?.value}
-                            name={'Label for CTA'}
-                            id={'cta_label'}
-                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0  sm:leading-6"
-                            placeholder={'Link with Regex Context'}
-                            //@ts-ignore
-                            onChange={(e) => setAnswer({ ...answer, value: e.target.value })}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex justify-center items-center my-4">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            submitHandler()
-                            setAnswer({ label: '', value: '' })
-                          }}
-                          className="rounded-md bg-indigo-600 px-10 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          <div className="flex gap-x-4 mt-6">
+            <div className="flex flex-col justify-center items-center">
+              <div className="flex gap-x-4">
+                <div className="flex flex-col justify-center items-center mt-4  border border-gray-300 p-4 rounded-xl bg-slate-100">
+                  <div className="text-lg font-bold">Answers</div>
+                  <div className="w-[306px]">
+                    <div className="isolate -space-y-px rounded-md">
+                      <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ">
+                        <label
+                          htmlFor={'ans_label'}
+                          className="block text-base  font-medium text-gray-900"
                         >
-                          {loading ? <SpinnerLoader className="h-5 w-5" /> : ' Add'}
-                        </button>
+                          Label
+                        </label>
+                        <input
+                          type="text"
+                          name={'Answer with Regex'}
+                          id={'ans_label'}
+                          value={answer?.label}
+                          className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500"
+                          placeholder={'Answer with Regex'}
+                          //@ts-ignore
+                          onChange={(e) => setAnswer({ ...answer, label: e.target.value })}
+                        />
+                      </div>
+                      <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5  ">
+                        <label
+                          htmlFor={'topic_ans_label'}
+                          className="block text-base  font-medium text-gray-900"
+                        >
+                          Topic Answer
+                        </label>
+                        <textarea
+                          rows={4}
+                          value={answer?.value}
+                          name={'Label for CTA'}
+                          id={'topic_ans_label'}
+                          placeholder={'Link with Regex Context'}
+                          onChange={(e) => setAnswer({ ...answer, value: e.target.value })}
+                          className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500"
+                        />
                       </div>
                     </div>
+                    <div className="flex justify-center items-center mt-4">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (answersEdit.ans || answersEdit.cta) {
+                            editAnswersHandler()
+                          } else submitHandler()
+                          setAnswer({ label: '', value: '' })
+                        }}
+                        className="rounded-md bg-indigo-600 px-10 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        {loading.answerLoading ? (
+                          <SpinnerLoader className="h-5 w-5" />
+                        ) : answersEdit.ans ? (
+                          'Edit'
+                        ) : (
+                          ' Add'
+                        )}
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex flex-col justify-center items-center">
-                    <div className="text-lg font-bold">CTA</div>
-                    <div className="w-[350px]">
-                      <div className="isolate -space-y-px rounded-md shadow-sm">
-                        <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-indigo-600">
-                          <label
-                            htmlFor={'ans_label'}
-                            className="block text-xs font-medium text-gray-900"
-                          >
-                            Label
-                          </label>
-                          <input
-                            type="text"
-                            name={'Answer with Regex'}
-                            value={cta?.label}
-                            id={'ans_label'}
-                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0  sm:leading-6"
-                            placeholder={'Answer with Regex'}
-                            //@ts-ignore
-                            onChange={(e) => setCTA({ ...cta, label: e.target.value })}
-                          />
-                        </div>
-                        <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-indigo-600">
-                          <label
-                            htmlFor={'cta_label'}
-                            className="block text-xs font-medium text-gray-900"
-                          >
-                            CTA Answer
-                          </label>
-                          <input
-                            type="text"
-                            name={'Label for CTA'}
-                            value={cta?.value}
-                            id={'cta_label'}
-                            className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0  sm:leading-6"
-                            placeholder={'Link with Regex Context'}
-                            //@ts-ignore
-                            onChange={(e) => setCTA({ ...cta, value: e.target.value })}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex justify-center items-center my-4">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            submitHandler()
-                            setCTA({ label: '', value: '' })
-                          }}
-                          className="rounded-md bg-indigo-600 px-10 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                </div>
+
+                <div className="flex flex-col justify-center items-center mt-4  border border-gray-300 p-4 rounded-xl bg-slate-100">
+                  <div className="text-lg font-bold">CTA</div>
+                  <div className="w-[306px]">
+                    <div className="isolate -space-y-px rounded-md">
+                      <div className="relative w-full rounded-md rounded-b-none px-3 pb-1.5 pt-2.5  ">
+                        <label
+                          htmlFor={'cta_label'}
+                          className="block text-base  font-medium text-gray-900"
                         >
-                          {loading ? <SpinnerLoader className="h-5 w-5" /> : ' Add'}
-                        </button>
+                          Label
+                        </label>
+                        <input
+                          type="text"
+                          name={'Answer with Regex'}
+                          value={cta?.label}
+                          id={'cta_label'}
+                          className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400 sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500 "
+                          placeholder={'Answer with Regex'}
+                          //@ts-ignore
+                          onChange={(e) => setCTA({ ...cta, label: e.target.value })}
+                        />
                       </div>
+                      <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ">
+                        <label
+                          htmlFor={'cta_ans_label'}
+                          className="block text-base  font-medium text-gray-900"
+                        >
+                          CTA Answer
+                        </label>
+                        <textarea
+                          rows={4}
+                          name={'Label for CTA'}
+                          value={cta?.value}
+                          id={'cta_ans_label'}
+                          className="block w-full text-md border-0 px-2 py-1 text-gray-900 placeholder:text-gray-400  sm:leading-6 rounded-lg mt-2 focus-within:z-10 focus:ring-1 focus:ring-inset focus:ring-indigo-500 
+                            "
+                          placeholder={'Link with Regex Context'}
+                          //@ts-ignore
+                          onChange={(e) => setCTA({ ...cta, value: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-center items-center mt-4">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (answersEdit.ans || answersEdit.cta) {
+                            editAnswersHandler()
+                          } else submitHandler()
+                          setCTA({ label: '', value: '' })
+                        }}
+                        className="rounded-md bg-indigo-600 px-10 p-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        {loading.ctaLoading ? (
+                          <SpinnerLoader className="h-5 w-5" />
+                        ) : answersEdit.cta ? (
+                          'Edit'
+                        ) : (
+                          ' Add'
+                        )}
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="mt-4 text-xl font-bold">{item?.topic}</div>
-          <div className="flex gap-x-16 w-full">
-            <div className="w-full px-4 pt-16">
-              <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
-                {item?.answer?.filter((i) => {
-                  if (i.label !== '' && i.value !== '') {
-                    return true
-                  }
-                  return false
-                }).length > 0 ? (
-                  item?.answer
-                    ?.filter((i) => {
-                      if (i.label !== '' && i.value !== '') {
-                        return true
-                      }
-                      return false
-                    })
-                    .map((ans, index: number) => (
-                      <Disclosure as="div" className="my-2" key={index}>
-                        {({ open }) => (
-                          <>
-                            <div className="flex">
-                              <Disclosure.Button className="flex w-full justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75">
-                                <span>{ans?.label ?? ''}</span>
-                                <ChevronUpIcon
-                                  className={`${
-                                    open ? 'rotate-180 transform' : ''
-                                  } h-5 w-5 text-indigo-500`}
-                                />
-                              </Disclosure.Button>
-                              <button className="mt-1.5">
-                                <TrashIcon className="w-5 h-5" />
-                              </button>
-                            </div>
-                            <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
-                              {ans?.value ?? ''}
-                            </Disclosure.Panel>
-                          </>
-                        )}
-                      </Disclosure>
-                    ))
-                ) : (
-                  <div className="text-lg font-semibold text-center">No answers yet</div>
-                )}
-              </div>
-            </div>
-            <div className="w-full px-4 pt-16">
-              <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
-                {item?.cta?.filter((i) => {
-                  if (i.label !== '' && i.value !== '') {
-                    return true
-                  }
-                  return false
-                }).length > 0 ? (
-                  item?.cta
-                    ?.filter((i) => {
-                      if (i.label !== '' && i.value !== '') {
-                        return true
-                      }
-                      return false
-                    })
-                    .map((ans, index: number) => (
-                      <Disclosure as="div" className="my-2" key={index}>
-                        {({ open }) => (
-                          <>
-                            <div className="flex">
-                              <Disclosure.Button className="flex w-full justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75">
-                                <span>{ans?.label ?? ''}</span>
-                                <ChevronUpIcon
-                                  className={`${
-                                    open ? 'rotate-180 transform' : ''
-                                  } h-5 w-5 text-indigo-500`}
-                                />
-                              </Disclosure.Button>
-                              <div className='flex gap-x-2'>
-                              <button className="mt-1.5">
-                                <PencilSquareIcon className="w-6 h-6" stroke='blue' />
-                              </button>
-                              <button className="mt-1.5">
-                                <TrashIcon className="w-5 h-5" />
-                              </button>
-                              </div>
-                            </div>
-                            <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
-                              {ans?.value ?? ''}
-                            </Disclosure.Panel>
-                          </>
-                        )}
-                      </Disclosure>
-                    ))
-                ) : (
-                  <div className="text-lg font-semibold text-center">No answers yet</div>
-                )}
-              </div>
+        <div className="flex gap-x-4 w-full">
+          <div className="w-full">
+            <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
+              {item?.answer?.filter(Boolean).length > 0 ? (
+                item?.answer
+                  ?.filter((i) => {
+                    if (i.label !== '' && i.value !== '') {
+                      return true
+                    }
+                    return false
+                  })
+                  .map((ans, index: number) => (
+                    <DisclosureComponent
+                      key={index}
+                      editHandler={() => {
+                        setAnswer({ label: ans.label, value: ans.value, id: ans.id })
+                        setIsAnswersEdit({ ans: true })
+                      }}
+                      deleteHandler={() => {
+                        setSelected({ type: 'ans', ans })
+                        modalRef.current.openModal()
+                      }}
+                      ans={ans}
+                      index={index}
+                      loading={loading}
+                      setloading={setLoading}
+                    />
+                  ))
+              ) : (
+                <div className="text-lg font-semibold text-center">No answers yet</div>
+              )}
             </div>
           </div>
+          <div className="w-full">
+            <div className="mx-auto w-full max-w-md rounded-2xl bg-white pt-2">
+              {item?.cta?.filter(Boolean).length > 0 ? (
+                item?.cta
+                  ?.filter((i) => {
+                    if (i.label !== '' && i.value !== '') {
+                      return true
+                    }
+                    return false
+                  })
+                  .map((ans, index: number) => (
+                    <DisclosureComponent
+                      ans={ans}
+                      key={index}
+                      editHandler={() => {
+                        setCTA({ label: ans.label, value: ans.value, id: ans.id })
+                        setIsAnswersEdit({ cta: true })
+                      }}
+                      deleteHandler={() => {
+                        setSelected({ type: 'cta', ans })
+                        modalRef.current.openModal()
+                      }}
+                      index={index}
+                      loading={loading}
+                      setloading={setLoading}
+                    />
+                  ))
+              ) : (
+                <div className="text-lg font-semibold text-center">No answers yet</div>
+              )}
+            </div>
+          </div>
+          <Modal ref={modalRef}>
+            <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+              <div>
+                <div className="mt-3 text-center sm:mt-5">
+                  <Dialog.Title as="h3" className="text-base font-bold leading-6 text-red-900 mb-4">
+                    {`Sure, you want to delete the ${selected?.type == 'ans' ? 'answer' : 'CTA'}?`}
+                  </Dialog.Title>
+                </div>
+              </div>
+              <div className="mt-5 sm:mt-6 flex gap-x-2">
+                <button
+                  type="button"
+                  className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                  onClick={() => deleteHandler(selected)}
+                >
+                  {loading.answerdeleteLoading || loading.ctadeleLoading ? (
+                    <SpinnerLoader className="w-5 h-5" />
+                  ) : (
+                    'Yes'
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                  onClick={() => modalRef.current.closeModal()}
+                >
+                  Cancel
+                </button>
+              </div>
+            </Dialog.Panel>
+          </Modal>
         </div>
-      ) : (
-        <div className="flex text-2xl font-bold my-16">Create a Topic First.</div>
-      )}
-    </Fragment>
+      </div>
+    </MainLayout>
   )
 }
 
