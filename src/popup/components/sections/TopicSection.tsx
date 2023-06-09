@@ -1,13 +1,12 @@
 import { useRecoilState } from 'recoil'
-import { QueryProps } from '../../../utils/global'
-import { queryParams } from '../../recoil/atoms'
 import CustomInput from '../commonComponents/core/Input'
 import { useLocation } from 'react-router-dom'
+import { QueryProps } from '../../../utils/global'
+import { queryParams } from '../../recoil/atoms'
 
 const TopicSection = () => {
   const location = useLocation()
   const [query, setQuery] = useRecoilState<QueryProps>(queryParams)
-
   return (
     <div className="px-2 py-6 text-lg text-black">
       <div className="flex gap-x-1">
@@ -15,7 +14,7 @@ const TopicSection = () => {
       </div>
       <div>
         <CustomInput
-          className={'accent-pink-500 w-full h-[100px]'}
+          className={`accent-pink-500 w-full ${query.isCta ? 'h-[200px]' : 'h-[290px]'}`}
           type={'textarea'}
           name={'edit_ans'}
           id={'edit_ans'}
