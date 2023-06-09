@@ -17,12 +17,25 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
   const [searchInput] = useRecoilState(searchInputState)
   const { getAllTopics } = useSupabase()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     getAllTopics().then((res) => {
-      setFilteredTopic
       setAllTopics(res?.data)
     })
   }, [isEditTopic])
+
+  useEffect(() => {
+    window.addEventListener('storage', (event) => {
+      let pinned = getLocalStorage('pinned') || []
+      let pinnedData = (allTopics || []).map((item: any) => {
+        return {
+          ...item,
+          pin: pinned.includes(item.id),
+        }
+      })
+      if (pinnedData.length > 0) setAllTopics(pinnedData)
+    })
+    return () => {}
+  }, [allTopics])
 
   useLayoutEffect(() => {
     setAllTopics(getLocalStorage('allTopics'))
@@ -41,8 +54,8 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
             .filter((a) => a.topic.toLowerCase().includes(searchInput.toLowerCase())),
         )
       }
-    } else {
     }
+
     return () => {}
   }, [_selectedFolder, allTopics, searchInput])
 
@@ -52,33 +65,66 @@ const ListView = ({ className, from }: { className?: string; from?: string }) =>
     >
       {filteredTopic?.length > 0 ? (
         <>
-          {' '}
-          {filteredTopic?.map((list, index) => (
-            <div key={index}>
-              {from === 'popup' ? (
-                <PopupList
-                  className={'text-lg px-4'}
-                  item={list}
-                  key={index}
-                  onItemClick={() => {
-                    navigate('/select', { state: list })
-                  }}
-                  ModalChild={undefined}
-                  SideButton={undefined}
-                  isModal={undefined}
-                />
-              ) : (
-                <OptionList
-                  className={'text-lg px-4'}
-                  item={list}
-                  key={index}
-                  onItemClick={() => {
-                    navigate('/create', { state: list })
-                  }}
-                />
-              )}
+          {filteredTopic?.filter((a) => a.pin).length > 0 && (
+            <div>
+              {filteredTopic
+                ?.filter((a) => a.pin)
+                ?.map((list, index) => (
+                  <div key={index}>
+                    {from === 'popup' ? (
+                      <PopupList
+                        className={'text-lg px-4'}
+                        item={list}
+                        key={index}
+                        onItemClick={() => {
+                          navigate('/select', { state: list })
+                        }}
+                        ModalChild={undefined}
+                        SideButton={undefined}
+                        isModal={undefined}
+                      />
+                    ) : (
+                      <OptionList
+                        className={'text-lg px-4'}
+                        item={list}
+                        key={index}
+                        onItemClick={() => {
+                          navigate('/create', { state: list })
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
             </div>
-          ))}
+          )}
+          {filteredTopic
+            ?.filter((a) => !a.pin)
+            ?.map((list, index) => (
+              <div key={index}>
+                {from === 'popup' ? (
+                  <PopupList
+                    className={'text-lg px-4'}
+                    item={list}
+                    key={index}
+                    onItemClick={() => {
+                      navigate('/select', { state: list })
+                    }}
+                    ModalChild={undefined}
+                    SideButton={undefined}
+                    isModal={undefined}
+                  />
+                ) : (
+                  <OptionList
+                    className={'text-lg px-4'}
+                    item={list}
+                    key={index}
+                    onItemClick={() => {
+                      navigate('/create', { state: list })
+                    }}
+                  />
+                )}
+              </div>
+            ))}
         </>
       ) : (
         <p className="text-lg p-3 flex items-center justify-center h-full w-2/3 mx-auto">

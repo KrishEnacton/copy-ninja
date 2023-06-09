@@ -1,5 +1,5 @@
 import { useRecoilState, useSetRecoilState } from 'recoil'
-import { setLocalStorage } from '../utils'
+import { getLocalStorage, setLocalStorage } from '../utils'
 import { TopicParams } from '../utils/global'
 import { supabase } from './init'
 import { allFoldersAtom, selectedFolder } from '../popup/recoil/atoms'
@@ -132,8 +132,15 @@ const useSupabase = () => {
         .from('tbl_topic')
         .select('*')
         .order('id', { ascending: false })
-      setLocalStorage('allTopics', data)
-      return { data, error }
+      let pinned = getLocalStorage('pinned') || []
+      let pinnedData = (data || []).map((item: any) => {
+        return {
+          ...item,
+          pin: pinned.includes(item.id),
+        }
+      })
+      setLocalStorage('allTopics', pinnedData)
+      return { data: pinnedData, error }
     } catch (error) {
       console.log(error)
     }
