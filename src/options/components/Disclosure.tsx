@@ -1,12 +1,26 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronUpIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 
-const DisclosureComponent = ({ ans, index }: { ans: any; index: number }) => {
+const DisclosureComponent = ({
+  ans,
+  index,
+  editHandler,
+  deleteHandler,
+  loading,
+  setloading,
+}: {
+  ans: any
+  index: number
+  editHandler: any
+  loading?: any,
+  setloading?: any
+  deleteHandler: any
+}) => {
   return (
-    <Disclosure as="div" className="my-2" key={index}>
+    <Disclosure as="div" className="my-2">
       {({ open }) => (
         <>
-          <div className="flex border border-slate-300 bg-slate-50 rounded-md px-4">
+          <div  className="flex border border-slate-300 bg-slate-50 rounded-md px-4">
             <Disclosure.Button className="flex w-full justify-between rounded-lg pr-4 py-2 text-left text-sm font-medium text-black focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-75">
               <span>{ans?.label ?? ''}</span>
               <ChevronUpIcon
@@ -14,10 +28,10 @@ const DisclosureComponent = ({ ans, index }: { ans: any; index: number }) => {
               />
             </Disclosure.Button>
             <div className="flex gap-x-2">
-              <button className="mt-1.5">
-                <PencilSquareIcon className="w-6 h-6" stroke='blue'/>
+              <button className="mt-1.5" onClick={editHandler}>
+                <PencilSquareIcon className="w-6 h-6" stroke="blue" />
               </button>
-              <button className="mt-1.5">
+              <button className="mt-1.5" onClick={deleteHandler}>
                 <TrashIcon className="w-5 h-5" />
               </button>
             </div>
