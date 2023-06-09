@@ -30,10 +30,10 @@ const SectionFooter = ({ isTopic }: { isTopic?: boolean }) => {
     //@ts-ignore
     const cta: any = generateRandomSentence(query?.cta?.value)
     //@ts-ignore
-    setKkcta(generateRandomSentence(query?.answer?.value))
+    setKkcta(cta)
     //@ts-ignore
-    setKkans(generateRandomSentence(query?.cta?.value))
-    copy(ans + '\n\n' + cta)
+    setKkans(ans)
+    copy(ans + '\n\n\n' + cta)
     navigate('/topic', { state: { ans, cta } })
   }
   return (
