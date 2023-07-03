@@ -55,7 +55,7 @@ const Search = ({ className, from }: { className?: string; from?: string }) => {
   function createTopicHandler() {
     setTopicLoading(true)
     createTopic({
-      folderId: _selectedFolder.id,
+      folderId: selected.id,
       topic,
       id: uuidv4(),
     })
